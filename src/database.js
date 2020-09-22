@@ -8,7 +8,3 @@ mongoose.connect('mongodb+srv://danny:MVAK2mc0r2M95d8u@cluster.worgv.gcp.mongodb
     useUnifiedTopology: true
 }).then(console.log(`La base de datos esta conectada\n`))
     .catch(err => console.log(err))
-
-
-
-
