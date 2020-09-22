@@ -1,12 +1,12 @@
-const db = require('megadb')
+const guild = require('../models/guild')
 module.exports = {
     name: 'guildMemberRemove',
     run: async (client, member) => {
-        let config = new db.crearDB(member.guild.id, 'servidores')
-        let idCanal = await config.get('mensajes.goodbye.channel')
+        let config = await guild.findOne({guildId: member.guild.id})
+        let idCanal = config.mensajes.goodbye.channel
         if (idCanal == 0) return
         let canal = client.channels.cache.find(c => c.id == idCanal)
-        let mensaje = await config.get('mensajes.goodbye.message')
+        let mensaje = config.mensajes.goodbye.message
         let regexUser = /{user}/g
         let regexGuild = /{guild}/g
         let regexMemberCount = /{membercount}/g

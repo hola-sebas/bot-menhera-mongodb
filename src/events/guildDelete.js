@@ -1,11 +1,10 @@
-const db = require('megadb')
-const fs = require('fs')
+const guildDB = require('../models/guild')
 module.exports = { 
     name: 'guildDelete',
     run(client, guild) {
         console.log(`\nHe sido eliminado de el servidor ${guild.name}`);
-        fs.unlinkSync(`./mega_databases/servidores/${guild.id}.json`)
-        console.log(`Se a eliminado correctamente la base de datos el el servidor ${guild.name}`);
+        guildDB.findOneAndDelete({guildId: guild.id})
+        console.log(`Se a eliminado correctamente la base de datos el el servidor`, guild.id);
         process.stdout.write('->')
     }
 }

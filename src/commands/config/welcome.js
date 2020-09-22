@@ -1,5 +1,5 @@
-const db = require('megadb'),
-    Discord = require('discord.js');
+const guild = require('../../models/guild');
+const Discord = require('discord.js');
 module.exports = {
     name: 'welcome',
     description: 'Configura las bienvenidas',
@@ -8,9 +8,9 @@ module.exports = {
     category: __dirname.split('\\').pop(),
     disable: false,
     execute: async (message, args) => {
-        if (!message.member.permissions.has('ADMINISTRATOR')) return message.channel.send('No tienes permisos para ejecutar este comando')
+        // if (!message.member.permissions.has('ADMINISTRATOR')) return message.channel.send('No tienes permisos para ejecutar este comando')
         if (!args[0]) return message.channel.send('Debes especificar una accion a realizar asi <card / channel / message>')
-        const config = new db.crearDB(message.guild.id, 'servidores')
+        const config = await guild.findOne({ guildId: message.guild.id })
         switch (args[0]) {
             case 'card':
                 let linkURL = args[1]
@@ -28,7 +28,8 @@ module.exports = {
                 try {
                     let img = await render.run(message.author, linkURL || linkAttachment)
                     message.channel.stopTyping(true)
-                    config.set('mensajes.welcome.img', linkURL || linkAttachment)
+                    config.mensajes.welcome.img = linkURL || linkAttachment;
+                    config.save();
                     message.channel.send('Ok este seria un ejemplo de tu tarjeta de bienvenida', { files: [img] })
                 } catch (err) {
                     message.channel.stopTyping(true)
@@ -36,16 +37,17 @@ module.exports = {
                     return
                 }
                 break;
-                
+
             case 'chnl':
             case 'channel':
                 if (args[1] == 'del') {
-                    let ok = await config.get('mensajes.welcome.channel')
+                    let ok = config.mensajes.welcome.channel
                     if (ok == 0) {
                         message.channel.send('El canal de bienvenidas ya esta desabilitado')
                         return
                     }
-                    config.set('mensajes.welcome.channel', 0)
+                    config.mensajes.welcome.channel = 0;
+                    config.save()
                     message.channel.send('Ok desabilite el canal de bienvenidas')
                     return
                 }
@@ -55,8 +57,9 @@ module.exports = {
                     message.channel.send('No tengo permisos en ese canal')
                     return
                 }
-                config.set('mensajes.welcome.channel', canal.id)
-                message.channel.send(`Ok ahora el canal de bienvenidas es <#${canal.id}>`)
+                config.mensajes.welcome.channel = canal.id;
+                config.save();
+                message.channel.send(`Ok ahora el canal de bienvenidas es <#${canal.id}>`);
                 break;
 
             case 'msg':
@@ -67,11 +70,13 @@ module.exports = {
                     return
                 }
                 if (mensaje == 'del') {
-                    config.set('mensajes.welcome.message', 'Bienvenido al server!')
+                    config.mensajes.welcome.message = 'Bienvenido al server!';
+                    config.save()
                     message.channel.send('Ok reestablecí el mansaje de bienvenida a \nBienvenido al server!')
                     return
                 }
-                config.set('mensajes.welcome.message', mensaje)
+                config.mensajes.welcome.message = mensaje;
+                config.save()
                 let regex = /@{member}/g
                 let regex1 = /{member}/g
                 if (regex.test(mensaje)) {

@@ -1,7 +1,9 @@
+// Done
+
 const Discord = require('discord.js'),
     enfriamiento = new Discord.Collection(),
-    db = require("megadb"),
-    configJSON = require('../../config.json');
+    configJSON = require('../../config.json'),
+    guild = require('../../models/guild')
 
 module.exports = {
     run: async (message, client) => {
@@ -22,16 +24,15 @@ module.exports = {
         timestamps.set(message.author.id, now);
         setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
 
-        let config = new db.crearDB(message.guild.id, 'servidores')
-        let prefix = await config.obtener('configuracion.prefix') || configJSON.prefix
+        let config = await guild.findOne({ guildId: message.guild.id })
+        if (!config) return 
+        let prefix = config.configuracion.prefix || configJSON.prefix
 
         // si se menciona el bot responde con su prefijo
 
-        if (!message.guild.me.permissionsIn(message.channel).has('SEND_MESSAGES')) {
-            return
-        }
-        let mencion = new RegExp(`^<@!?${client.user.id}>( |)$`);
+        if (!message.guild.me.permissionsIn(message.channel).has('SEND_MESSAGES')) return
 
+        let mencion = new RegExp(`^<@!?${client.user.id}>( |)$`);
 
         if (message.content.match(mencion)) {
             const embed_mencion = new Discord.MessageEmbed()

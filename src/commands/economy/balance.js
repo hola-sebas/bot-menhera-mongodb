@@ -1,5 +1,5 @@
-const db = require('megadb')
 const Discord = require('discord.js')
+const user = require('../../models/user')
 module.exports = {
     name: 'balance',
     description: 'Muestra tu dienro actual',
@@ -9,9 +9,9 @@ module.exports = {
     category: __dirname.split('\\').pop(),
     disable: true,
     execute: async (message, args) => {
-        const config = new db.crearDB(message.author.id, 'usuarios')
-        let efectivo  = await config.obtener('money.efectivo')
-        let banco = await config.obtener('money.bank')
+        const config = await user.findOne({ userId: message.author.id })
+        let efectivo = config.money.efectivo
+        let banco = config.money.bank
         const embedBalance = new Discord.MessageEmbed()
             .setTitle('Acerca de tu dinero')
             .addField('💸 Dinero en efectivo:', efectivo)

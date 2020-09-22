@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-const version = require('../../package.json')
+const version = require('../../../package.json')
 const os = require("os")
 
 

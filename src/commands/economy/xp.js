@@ -1,6 +1,5 @@
 const render = require('../../modules/images/rank'),
-    db = require('megadb'),
-    fs = require('fs');
+    userdb = require('../../models/user');
 module.exports = {
     name: 'xp',
     description: 'Muestra tu xp actual o de otro usuario',
@@ -13,13 +12,13 @@ module.exports = {
         message.channel.startTyping()
         let user = message.mentions.users.first() || message.author
         if (user.id == client.user.id) return message.channel.send('Esa soy yo!\nTengo un nivel I N F I N I T O (⌐■_■)')
-        if (!fs.existsSync(`././mega_databases/usuarios/${user.id}.json`)) return message.channel.send('Hmmm no tengo datos de ese usuario')
-        let config = new db.crearDB(user.id, 'usuarios')
-        let level = await config.obtener('xp.nivel')
-        let curXp = await config.get('xp.actual')
-        let needXP = await config.get('xp.necesario')
-        let color = await config.get('xp.color')
-        let url = await config.get('xp.url')
+        let config = await userdb.findOne({ userId: user.id })
+        if (!config) return message.channel.send('hmm no tengo datos de ese usuario')
+        let level = config.xp.nivel
+        let curXp = config.xp.actual
+        let needXP = config.xp.necesario
+        let color = config.xp.color
+        let url = config.xp.url
         try {
             let img = await render.run(user, color, level, curXp, needXP, url)
             message.channel.send({ files: [img] })

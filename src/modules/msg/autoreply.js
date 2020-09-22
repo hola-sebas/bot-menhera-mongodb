@@ -1,6 +1,9 @@
+// DONE
+
 const Discord = require('discord.js')
 const enfriamiento = new Discord.Collection();
-const db = require('megadb')
+const guild = require('../../models/guild')
+
 module.exports = {
     run: async (message) => {
         if (message.author.bot) return
@@ -28,8 +31,9 @@ module.exports = {
 
         let mensaje = message.content.toLowerCase()
 
-        let config = new db.crearDB(message.guild.id, 'servidores')
-        let activado = await config.get('mensajes.autoReply')
+        let config = await guild.findOne({ guildId: message.guild.id })
+        if (!config) return 
+        let activado = config.mensajes.autoReply
         if (activado == undefined || activado == true) {
             if (mensaje.startsWith('hola')) {
                 var Saludos = [
@@ -46,7 +50,7 @@ module.exports = {
                     .setDescription(message.author.username + " ha mostrado sus respetos")
                     .setColor("RANDOM")
                     .setImage("https://gluc.mx/u/fotografias/m/2019/12/30/f608x342-21614_51337_0.png");
-                message.channel.send(embed_f).catch(err=>err);
+                message.channel.send(embed_f).catch(err => err);
                 return
             }
         } else {

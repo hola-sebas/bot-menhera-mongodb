@@ -1,4 +1,4 @@
-const db = require('megadb')
+const guild = require('../../models/guild')
 const Discord = require('discord.js')
 module.exports = {
     name: 'goodbye',
@@ -10,13 +10,14 @@ module.exports = {
     execute: async (message, args) => {
         if (!message.member.permissions.has('ADMINISTRATOR')) return message.channel.send('No tienes permisos para ejecutar este comando')
         if (!args[0]) return message.channel.send('Debes especificar una accion a realizar con \`channel o chnl\` y \`message o msg\`')
-        const config = new db.crearDB(message.guild.id, 'servidores')
+        const config = await guild.findOne({ guildId: message.guild.id })
         switch (args[0]) {
             case 'chnl':
             case 'channel':
                 if (!args[1]) return message.channel.send('debes mencionar un canal o escribir \`del\` para desactivarlo\`')
                 if (args[1] == 'del') {
-                    config.set('mensajes.goodbye.channel', 0)
+                    config.mensajes.goodbye.channel = 0
+                    config.save()
                     message.channel.send('Ok desactive el canal de despedidas')
                     return
                 }
@@ -29,19 +30,22 @@ module.exports = {
                     message.channel.send('No tengo permisos para configurar ese canal como el de despedidas')
                     return
                 }
-                config.set('mensajes.goodbye.channel', canal.id)
+                config.mensajes.goodbye.channel = canal.id
+                config.save()
                 message.channel.send(`Ok ahora el canal de despedidas es <#${canal.id}>`)
                 break;
             case 'msg':
             case 'message':
                 if (!args[1]) return message.channel.send('Debes poner un mensaje de bienvenida\npuedes usar \`{user}\` \`{guild}\` \`{membercount}\`')
                 if (args[1] == 'del') {
-                    config.set('mensajes.goodbye.message', '{user} Se fue de el server')
+                    config.mensajes.goodbye.message = '{user} Se fue de el server'
+                    config.save()
                     message.channel.send(`Ok reestableci el mensaje de despedidas a \n{user} Se fue de el server`)
                     return
                 }
                 let mensaje = args.slice(1).join(' ')
-                config.set('mensajes.goodbye.message', mensaje)
+                config.mensajes.goodbye.message = mensaje
+                config.save()
                 let regexUser = /{user}/g
                 let regexGuild = /{guild}/g
                 let regexMemberCount = /{membercount}/g

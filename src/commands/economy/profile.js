@@ -1,5 +1,5 @@
-const db = require('megadb')
 const fs = require('fs')
+const user = require('../../models/user')
 const Discord = require('discord.js')
 module.exports = {
     name: 'profile',
@@ -9,20 +9,20 @@ module.exports = {
     permissions: ['SEND_MESSAGES', 'VIEW_CHANNEL', 'EMBED_LINKS'],
     category: __dirname.split('\\').pop(),
     disable: true,
-    
+
     execute: async (message, args) => {
-        let usu = message.mentions.users.first() || message.author 
-        if(!fs.existsSync(`././mega_databases/usuarios/${usu.id}.json`)) return message.channel.send('No tengo datos de ese usuario')
-        const config = new db.crearDB(usu.id, 'usuarios')
-        let efectivo = await config.obtener('money.efectivo')
-        let banco = await config.obtener('money.bank')
-        let xpActual = await config.obtener('xp.actual')
-        let xpNesesario = await config.obtener('xp.necesario')
-        let xpNivel = await config.obtener('xp.nivel')
-        let invBag = await config.obtener('inventory.bag')
-        let invShopOpen = await config.obtener('inventory.shop.open')
-        let invShopVen = await config.obtener('inventory.shop.ventas')
-        let invShop = await config.obtener('inventory.shop.productos')
+        let usu = message.mentions.users.first() || message.author
+        const config = await user.findOne({ userId: usu.id })
+        if (!config) return message.channel.send('hmm no trengo datos de este usuario')
+        let efectivo = config.money.efectivo
+        let banco = config.money.bank
+        let xpActual = config.xp.actual
+        let xpNesesario = config.xp.necesario
+        let xpNivel = config.xp.nivel
+        let invBag = config.inventory.bag
+        let invShopOpen = config.inventory.shop.open
+        let invShopVen = config.inventory.shop.ventas
+        let invShop = config.inventory.shop.productos
         if (!invBag.length) {
             invBag = 'No hay items'
         } else {
@@ -30,10 +30,10 @@ module.exports = {
                 return `${item.item} (x${item.cantidad})`
             }).join(', ')
         }
-        if(!invShop.length){
+        if (!invShop.length) {
             invShop = 'No hay items'
-        }else {
-            invShop = invShop.map(item=>{
+        } else {
+            invShop = invShop.map(item => {
                 return `${item.item} ${item.price}\$`
             }).join('\n')
         }

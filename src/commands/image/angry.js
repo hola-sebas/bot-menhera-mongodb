@@ -13,7 +13,6 @@ module.exports = {
     execute: async (message, args) => {
         new Promise(async (resolve, reject) => {
             let gif = await tnai.sfw.angry();
-            console.log(gif);
             const embed = new Discord.MessageEmbed()
                 .setTitle(`${message.author.username} esta enajado >:(`)
                 .setImage(gif)

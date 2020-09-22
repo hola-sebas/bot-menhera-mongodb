@@ -1,6 +1,6 @@
 const fs = require('fs')
 const discord = require('discord.js')
-const version = require('../../package.json')
+const version = require('../../../package.json')
 
 module.exports = {
     name: 'help',

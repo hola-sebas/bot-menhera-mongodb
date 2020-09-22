@@ -1,10 +1,11 @@
 const Discord = require('discord.js'),
     fs = require('fs'),
     cooldowns = new Discord.Collection(),
-    db = require('megadb'),
     sh = require('chalk'),
     configJSON = require('../config.json'),
-    readline = require('readline')
+    readline = require('readline'),
+    guild = require('../models/guild'),
+    user = require('../models/user')
 
 module.exports = {
     name: 'message',
@@ -21,6 +22,12 @@ module.exports = {
         let prefix = configJSON.prefix
 
         //ejecucion de modulos
+        fs.readdirSync('./modules/').filter(a => a.endsWith('.js')).map(async modulo => {
+            const x = require(`../modules/${modulo}`)
+            await x.run(message, client, prefix)
+            return
+        })
+        
         fs.readdirSync('./modules/msg').map(async modulo => {
             const x = require(`../modules/msg/${modulo}`)
             x.run(message, client, prefix)
@@ -28,11 +35,15 @@ module.exports = {
         })
         //fin de ejecucion de modulos
 
-        let configuracion = new db.crearDB(message.guild.id, 'servidores')
-
-        prefix = await configuracion.get('configuracion.prefix')
+        // verificar el registro de la base de datos
+        let usuario = await user.findOne({ userId: message.author.id })
+        if (!usuario) return
+        let configuracion = await guild.findOne({ guildId: message.guild.id })
+        if (!configuracion) return
+        prefix = configuracion.configuracion.prefix
 
         if (!message.content.startsWith(prefix) || message.author.bot) return;
+        // fin de la verificacion
 
         // si el contenido es solo el prefix
         if (message.content == prefix) {
@@ -48,8 +59,8 @@ module.exports = {
         const args = message.content.slice(prefix.length).trim().split(/ +/);
         const commandName = args.shift().toLowerCase();
 
-        let Desactivados = await configuracion.obtener('configuracion.comandosDesactivados')
-        let Categorias = await configuracion.obtener('configuracion.categoriasDesactivadas')
+        let Desactivados = configuracion.configuracion.comandosDesactivados
+        let Categorias = configuracion.configuracion.categoriasDesactivadas
 
         const command = client.commands.get(commandName)
             || client.commands.find((cmd) => cmd.aliases && cmd.aliases.includes(commandName));
@@ -88,7 +99,7 @@ module.exports = {
                     if (timeLeft > 60) {
                         timeLeft = timeLeft / 60
                         tiempo = 'horas'
-                        if(timeLeft > 60){
+                        if (timeLeft > 60) {
                             timeLeft = timeLeft / 24
                             tiempo = 'dias'
                         }

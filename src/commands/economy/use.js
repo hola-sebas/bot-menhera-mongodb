@@ -1,4 +1,4 @@
-const db = require('megadb')
+const user = require('../../models/user')
 const fetch = require('node-fetch');
 const Discord = require('discord.js')
 module.exports = {
@@ -11,14 +11,14 @@ module.exports = {
     execute: async (message, args) => {
         const itemToUse = args.join(' ')
         if (!itemToUse) return message.channel.send('Debes poner un item para usar!')
-        const config = new db.crearDB(message.author.id, 'usuarios')
-        let usuBag = await config.get('inventory.bag')
+        const config = await user.findOne({ userId: message.author.id })
+        let usuBag = config.inventory.bag
         let indexItemBag = usuBag.findIndex(index => index.item == itemToUse)
         if (indexItemBag == -1) return message.channel.send('No tienes ese objeto en tu mochila')
         if (usuBag[indexItemBag].cantidad <= 1) {
-            config.delIndex('inventory.bag', indexItemBag)
+            config.inventory.bag.splice(indexItemBag, 1)
         } else {
-            config.setIndex('inventory.bag', indexItemBag, { item: usuBag[indexItemBag].item, cantidad: usuBag[indexItemBag].cantidad - 1 })
+            config.inventory.bag.splice(indexItemBag, 1, { item: usuBag[indexItemBag].item, cantidad: usuBag[indexItemBag].cantidad - 1 })
         }
         let gif = await fetch(`https://api.tenor.com/v1/search?q=anime-${itemToUse.replace(/ /g, '-')}&key=IQ1KGGTERBX6&limit=5`)
             .then(res => res.json())
@@ -28,5 +28,6 @@ module.exports = {
             .setTitle(`${message.author.tag} usó ${itemToUse}`)
             .setImage(gif)
         message.channel.send(embedGif)
+        config.save()
     }
 }

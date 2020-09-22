@@ -1,4 +1,5 @@
-const db = require('megadb')
+const bugs = require('../../models/bugs')
+
 module.exports = {
     name: 'bugreport',
     description: 'Reporta un bug que encontraste por ahí',
@@ -11,22 +12,27 @@ module.exports = {
     execute: async (message, args) => {
         try {
             if (!args.length) return message.channel.send('Debes poner un bug para reportar')
-            let config = new db.crearDB('bugs')
+            let config = await bugs.findOne({ userId: message.author.id })
             let bug = args.join(' ')
-            if(bug.length > 1000) return message.channel.send('No puedes poner un bug mayor a 1000 caracteres')
-            let user = await config.get(message.author.id)
-            if (!user) {
-                config.set(`${message.author.id}.id`, message.author.id)
-                config.set(`${message.author.id}.username`, message.author.tag)
-                config.set(`${message.author.id}.bug`, [bug])
+            if (bug.length > 1000) return message.channel.send('No puedes poner un bug mayor a 1000 caracteres')
+            if (!config) {
+                const newBug = new bugs({
+                    userId: message.author.id,
+                    username: message.author.username,
+                    bug: [bug]
+                })
+                newBug.save()
                 message.channel.send('Se a reportado el bug correctamente, gracias por apoyar a mejorar este bot')
             } else {
-                config.set(`${message.author.id}.id`, message.author.id)
-                config.set(`${message.author.id}.username`, message.author.tag)
-                config.push(`${message.author.id}.bug`, bug)
+                config.bug.push(bug)
+                await bugs.findOneAndUpdate({ userId: message.author.id }, {
+                    userId: message.author.id,
+                    username: message.author.username,
+                    bug: config.bug
+                })
                 message.channel.send('Se a reportado el bug correctamente, gracias por apoyar a mejorar este bot')
             }
-        }catch(err){
+        } catch (err) {
             message.channel.send('Lo siento hubo un error al reportar el bug :(')
             console.log('\n', err);
             process.stdout.write('->')

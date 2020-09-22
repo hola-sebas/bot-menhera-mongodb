@@ -1,6 +1,6 @@
 const fs = require('fs'),
-    db = require('megadb'),
-    Discord = require('discord.js');
+    Discord = require('discord.js'),
+    user = require('../../models/user')
 module.exports = {
     name: 'shop',
     description: 'Compra, vende y revisa la tienda de otros jugadores',
@@ -18,101 +18,84 @@ module.exports = {
                 if (!buyUsuMencion) return message.channel.send('Debes mencionar a un usuario para comprarle')
                 if (buyUsuMencion.id == message.author.id) return message.channel.send('No te puedes comparte a ti mismo')
                 if (buyUsuMencion.id == client.user.id) return message.channel.send('No tengo tiempo para abrir una tienda')
-                if (!fs.existsSync(`././mega_databases/usuarios/${buyUsuMencion.id}.json`)) return message.channel.send('Hmm no tengo datos de ese usuario')
-                const buyDbMencion = new db.crearDB(buyUsuMencion.id, 'usuarios')
-                if (!await buyDbMencion.get('inventory.shop.open')) return message.channel.send(`${buyUsuMencion} tiene la tienda cerrada vuelve mas tarde o pidele que la abra`)
+                const buyDbMencion = await user.findOne({ userId: buyUsuMencion.id })
+                if (!buyDbMencion) return message.channel.send('hmm no tengo datos de este usuario')
+                if (!buyDbMencion.inventory.shop.open) return message.channel.send(`${buyUsuMencion} tiene la tienda cerrada vuelve mas tarde o pidele que la abra`)
                 let buyProductoAComprar = buyArgs.slice(2).join(' ')
                 if (!buyProductoAComprar) return message.channel.send('Debes escribir un producto para comprar')
-                let buyIndexShop = await buyDbMencion.get('inventory.shop.productos').then(shop => {
-                    let asd = shop.findIndex(item => item.item == buyProductoAComprar)
-                    return asd
-                })
+                let buyIndexShop = buyDbMencion.inventory.shop.productos.findIndex(item => item.item == buyProductoAComprar)
                 if (buyIndexShop == -1) return message.channel.send('El usuario no tiene ese producto')
-                let buyProducto = await buyDbMencion.get('inventory.shop.productos').then(itemShop => {
-                    let asd = itemShop.map(item => {
-                        if (item.item == buyProductoAComprar) return item
-                    })
-                    return asd.filter(Boolean)[0]
-                })
-                const buyDbAuthor = new db.crearDB(message.author.id, 'usuarios')
-                let buyMoneyAuthor = await buyDbAuthor.get('money.efectivo')
+                let buyProducto = buyDbMencion.inventory.shop.productos.map(item => {
+                    if (item.item == buyProductoAComprar) return item
+                }).filter(Boolean)[0]
+
+                const buyDbAuthor = await user.findOne({ userId: message.author.id })
+                let buyMoneyAuthor = buyDbAuthor.money.efectivo
                 if (buyProducto.price > buyMoneyAuthor) return message.channel.send('No tienes el dinero en efectivo suficiente para comprar ese producto')
-                buyDbAuthor.restar('money.efectivo', buyProducto.price)
-                buyDbMencion.sumar('money.bank', buyProducto.price)
-                let buyIndexBagAuthor = await buyDbAuthor.get('inventory.bag').then(bag => {
-                    let ok = bag.findIndex(item => item.item == buyProductoAComprar)
-                    return ok
-                })
-                let buyBagItemAuthor = await buyDbAuthor.get('inventory.bag').then(bag => {
-                    let ok = bag.map(item => {
-                        if (item.item == buyProductoAComprar) return item
-                    })
-                    return ok.filter(Boolean)[0]
-                })
+                buyDbAuthor.money.efectivo -= buyProducto.price
+                buyDbMencion.money.bank += buyProducto.price
+                let buyIndexBagAuthor = buyDbAuthor.inventory.bag.findIndex(item => item.item == buyProductoAComprar)
+
+                let buyBagItemAuthor = await buyDbAuthor.inventory.bag.map(item => {
+                    if (item.item == buyProductoAComprar) return item
+                }).filter(Boolean)[0]
                 if (buyIndexBagAuthor == -1) {
-                    buyDbAuthor.push('inventory.bag', { item: buyProductoAComprar, cantidad: 1 })
+                    buyDbAuthor.inventory.bag.push({ item: buyProductoAComprar, cantidad: 1 })
                 } else {
-                    buyDbAuthor.setIndex('inventory.bag', buyIndexBagAuthor, { item: buyBagItemAuthor.item, cantidad: buyBagItemAuthor.cantidad + 1 })
+                    buyDbAuthor.inventory.bag.splice(buyIndexBagAuthor, 1, { item: buyBagItemAuthor.item, cantidad: buyBagItemAuthor.cantidad + 1 })
                 }
-                buyDbMencion.delIndex('inventory.shop.productos', buyIndexShop)
-                buyDbMencion.set('inventory.shop.ventas.usuario', `${message.author.tag}(${message.author.id})`)
-                buyDbMencion.set('inventory.shop.ventas.producto', buyProductoAComprar)
-                buyDbMencion.set('inventory.shop.ventas.fecha', `${new Date().getDate()}/${new Date().getMonth() + 1}/${new Date().getFullYear()}`)
-                buyDbAuthor.set('inventory.shop.compras.producto', buyProductoAComprar)
-                buyDbAuthor.set('inventory.shop.compras.usuario', `${buyUsuMencion.tag}(${buyUsuMencion.id})`)
-                buyDbAuthor.set('inventory.shop.compras.fecha', `${new Date().getDate()}/${new Date().getMonth() + 1}/${new Date().getFullYear()}`)
+                buyDbMencion.inventory.shop.productos.splice(buyIndexShop, 1)
+                buyDbMencion.inventory.shop.ventas.usuario = `${message.author.tag}(${message.author.id})`
+                buyDbMencion.inventory.shop.ventas.producto = buyProductoAComprar
+                buyDbMencion.inventory.shop.ventas.fecha = `${new Date().getDate()}/${new Date().getMonth() + 1}/${new Date().getFullYear()}`
+                buyDbAuthor.inventory.shop.compras.producto = buyProductoAComprar
+                buyDbAuthor.inventory.shop.compras.usuario = `${buyUsuMencion.tag}(${buyUsuMencion.id})`
+                buyDbAuthor.inventory.shop.compras.fecha = `${new Date().getDate()}/${new Date().getMonth() + 1}/${new Date().getFullYear()}`
                 message.channel.send(`Compraste ${buyProductoAComprar} por un precio de ${buyProducto.price}\$`)
+                buyDbAuthor.save()
+                buyDbMencion.save()
                 break;
             case 'shell':
                 let shellArgumentos = args
                 let shellItemToShell = shellArgumentos.slice(1, args.length - 1).join(' ')
                 if (!shellItemToShell) return message.channel.send('Debes especificar el item que quieres vender')
-                const shellConfig = new db.crearDB(message.author.id, 'usuarios')
-                let shellIndexBag = await shellConfig.get('inventory.bag').then(obtenido => {
-                    let asd = obtenido.findIndex(item => item.item == shellItemToShell)
-                    return asd
-                })
+                const shellConfig = await user.findOne({ userId: message.author.id })
+                let shellIndexBag = shellConfig.inventory.bag.findIndex(item => item.item == shellItemToShell)
+
                 if (shellIndexBag == undefined || shellIndexBag == -1) return message.channel.send('Hmm al parecer no tienes ese objeto en tu mochila')
                 let shellArgsPrice = args.pop()
                 if (!shellArgsPrice) return message.channel.send('Debes ponerle un precio al producto')
-                console.log(shellArgsPrice);
                 let shellPrecioProducto = parseInt(shellArgsPrice)
                 if (isNaN(shellPrecioProducto)) return message.channel.send('El precio que especificaste es incorrecto')
                 if (shellPrecioProducto > 1000) return message.channel.send('El precio no puede ser mayor a 1000')
                 if (!shellPrecioProducto) return message.channel.send('Debes especificar un precio')
-                let shellUsuShop = await shellConfig.get('inventory.shop.productos')
+                let shellUsuShop = shellConfig.inventory.shop.productos
                 if (shellUsuShop.length >= 10) return message.channel.send('Ya alcanzaste el maximo de productos en venta (x10)')
 
-                let shellBagUsu = await shellConfig.get('inventory.bag').then(itemsEnMochila => {
-                    let toOk = itemsEnMochila.map(item => {
-                        if (item.item == shellItemToShell) {
-                            return item
-                        }
-                    })
-                    return toOk.filter(Boolean)[0]
-                })
+                let shellBagUsu = shellConfig.inventory.bag.map(item => { if(item.item == shellItemToShell) return item}).filter(Boolean)[0]
                 if (shellBagUsu.cantidad <= 1) {
-                    shellConfig.delIndex('inventory.bag', shellIndexBag)
+                    shellConfig.inventory.bag.splice(shellIndexBag, 1)
                 } else {
-                    shellConfig.setIndex('inventory.bag', shellIndexBag, { item: shellItemToShell, cantidad: parseInt(shellBagUsu.cantidad) - 1 })
+                    shellConfig.inventory.bag.splice(shellIndexBag, 1, { item: shellItemToShell, cantidad: parseInt(shellBagUsu.cantidad) - 1 })
                 }
-                shellConfig.push('inventory.shop.productos', { item: shellItemToShell, price: shellPrecioProducto }).then(tiendaActualizada => {
-                    let todoOK = tiendaActualizada.map(itemActializado => {
-                        return `\`\`\`\nProducto: ${itemActializado.item}\nPrecio: ${itemActializado.price}\n\`\`\``
-                    }).join(' ')
-                    const embedTiendaActualizada = new Discord.MessageEmbed()
-                        .setDescription(`Ok esta es tu tienda actualizada\n${todoOK}`)
-                        .setColor('RANDOM')
-                    message.channel.send(embedTiendaActualizada)
-                })
+                shellConfig.inventory.shop.productos.push({ item: shellItemToShell, price: shellPrecioProducto })
+                let shelltiendaActualizada = shellConfig.inventory.shop.productos
+                let shelltodoOK = shelltiendaActualizada.map(itemActializado => {
+                    return `\`\`\`\nProducto: ${itemActializado.item}\nPrecio: ${itemActializado.price}\n\`\`\``
+                }).join(' ')
+                const embedTiendaActualizada = new Discord.MessageEmbed()
+                    .setDescription(`Ok esta es tu tienda actualizada\n${shelltodoOK}`)
+                    .setColor('RANDOM')
+                message.channel.send(embedTiendaActualizada)
+                shellConfig.save()
                 break;
             case 'show':
                 const embedShopShow = new Discord.MessageEmbed()
                     .setColor('RANDOM')
                 let usuMencion = message.mentions.users.first() || message.author
                 if (usuMencion.bot) return message.channel.send('Los bots no pueden tener una tienda :(')
-                const dbUsu = new db.crearDB(usuMencion.id, 'usuarios')
-                let usuMencionShop = await dbUsu.get('inventory.shop.productos')
+                const dbUsu = await user.findOne({ userId: usuMencion })
+                let usuMencionShop = dbUsu.inventory.shop.productos
                 if (!usuMencionShop.length) {
                     embedShopShow.setTitle(`Tienda de ${usuMencion.tag}`)
                     embedShopShow.setDescription(`El usuario ${usuMencion} no tiene ningun objeto a la venta`)
@@ -128,45 +111,42 @@ module.exports = {
             case 'cancel':
                 let cancelProducto = args.slice(1).join(' ')
                 if (!cancelProducto) return message.channel.send('Debes escribir un producto para quitar de la venta')
-                const cancelDbAuthor = new db.crearDB(message.author.id, 'usuarios')
-                let cancelIndexShop = await cancelDbAuthor.get('inventory.shop.productos').then(producto => {
-                    let ok = producto.findIndex(item => item.item == cancelProducto)
-                    return ok
-                })
-                if (cancelIndexShop == -1) {
-                    return message.channel.send('No tienes ese producto a la venta')
+                const cancelDbAuthor = await user.findOne({ userId: message.author.id })
+                let cancelIndexShop = cancelDbAuthor.inventory.shop.productos.findIndex(item => item.item == cancelProducto)
+
+                if (cancelIndexShop == -1) return message.channel.send('No tienes ese producto a la venta')
+
+                let cancelIndexBag = cancelDbAuthor.inventory.bag.findIndex(item => item.item == cancelProducto)
+
+                if (cancelIndexBag == -1) {
+                    cancelDbAuthor.inventory.bag.push({ item: cancelProducto, cantidad: 1 })
+                    cancelDbAuthor.inventory.shop.productos.splice(cancelIndexShop, 1)
                 } else {
-                    let cancelIndexBag = await cancelDbAuthor.get('inventory.bag').then(producto => {
-                        let ok = producto.findIndex(item => item.item == cancelProducto)
-                        return ok
-                    })
-                    if (cancelIndexBag == -1) {
-                        cancelDbAuthor.push('inventory.bag', { item: cancelProducto, cantidad: 1 })
-                        cancelDbAuthor.delIndex('inventory.shop.productos', cancelIndexShop)
-                    } else {
-                        let cancelBagAuthor = await cancelDbAuthor.get('inventory.bag')
-                        cancelBagAuthor = cancelBagAuthor[cancelIndexBag]
-                        cancelDbAuthor.setIndex('inventory.bag', cancelIndexBag, { item: cancelBagAuthor.item, cantidad: cancelBagAuthor.cantidad + 1 })
-                        cancelDbAuthor.delIndex('inventory.shop.productos', cancelIndexShop)
-                    }
-                    message.channel.send(`El producto ${cancelProducto} se ha retirado corectamente`)
+                    let cancelBagAuthor = cancelDbAuthor.inventory.bag[cancelIndexBag]
+
+                    cancelDbAuthor.inventory.bag.splice(cancelIndexBag, 1, { item: cancelBagAuthor.item, cantidad: cancelBagAuthor.cantidad + 1 })
+                    cancelDbAuthor.inventory.shop.productos.splice(cancelIndexShop, 1)
                 }
+                message.channel.send(`El producto ${cancelProducto} se ha retirado corectamente`)
+                cancelDbAuthor.save()
                 break
             case 'open':
-                const openDbAuthor = new db.crearDB(message.author.id, 'usuarios')
-                let openShopOpen = await openDbAuthor.get('inventory.shop.open')
+                const openDbAuthor = await user.findOne({ userId: message.author.id })
+                let openShopOpen = openDbAuthor.inventory.shop.open
                 if (openShopOpen) {
                     message.channel.send('Tu tienda ya esta abierta')
                 } else {
-                    openDbAuthor.set('inventory.shop.open', true)
+                    openDbAuthor.inventory.shop.open = true
+                    openDbAuthor.save()
                     message.reply('Abriste tu tienda!')
                 }
                 break;
             case 'close':
-                const closeDbAuthor = new db.crearDB(message.author.id, 'usuarios')
-                let closeShopOpen = await closeDbAuthor.get('inventory.shop.open')
+                const closeDbAuthor = await user.findOne({ userId: message.author.id })
+                let closeShopOpen = closeDbAuthor.inventory.shop.open
                 if (closeShopOpen) {
-                    closeDbAuthor.set('inventory.shop.open', false)
+                    closeDbAuthor.inventory.shop.open = false
+                    closeDbAuthor.save()
                     message.reply('Cerraste tu tienda!')
                 } else {
                     message.channel.send('Tu tienda ya esta cerrada')
@@ -174,15 +154,15 @@ module.exports = {
                 break;
             case 'info':
                 let infoUsu = message.mentions.users.first() || message.author
-                if (!fs.existsSync(`././mega_databases/usuarios/${infoUsu.id}.json`)) return message.channel.send('No tengo datos de ese usuario')
-                const infoDbUsu = new db.crearDB(infoUsu.id, 'usuarios')
-                let infoVentasUsu = await infoDbUsu.get('inventory.shop.ventas.usuario')
-                let infoVentasProducto = await infoDbUsu.get('inventory.shop.ventas.producto')
-                let infoVentasFecha = await infoDbUsu.get('inventory.shop.ventas.fecha')
+                const infoDbUsu = await user.findOne({ userId: infoUsu.id })
+                if (!infoDbUsu) return message.channel.send('hmm no tengo datos de el ususario')
+                let infoVentasUsu = infoDbUsu.inventory.shop.ventas.usuario
+                let infoVentasProducto = infoDbUsu.inventory.shop.ventas.producto
+                let infoVentasFecha = infoDbUsu.inventory.shop.ventas.fecha
                 if (infoVentasFecha == undefined) infoVentasFecha = 'No hay datos';
-                let infoComprasUsu = await infoDbUsu.get('inventory.shop.compras.usuario')
-                let infoComprasProducto = await infoDbUsu.get('inventory.shop.compras.producto')
-                let infoComprasFecha = await infoDbUsu.get('inventory.shop.compras.fecha')
+                let infoComprasUsu = infoDbUsu.inventory.shop.compras.usuario
+                let infoComprasProducto = infoDbUsu.inventory.shop.compras.producto
+                let infoComprasFecha = infoDbUsu.inventory.shop.compras.fecha
                 const infoEmbed = new Discord.MessageEmbed()
                     .setTitle(`Informacion hacerca de las transacciones de ${infoUsu.tag}`)
                     .addField(`**Ventas**`, `*Ultimo usuario registrado:*\n👤 ${infoVentasUsu}\n*Ultimo producto registrado:*\n🏷 ${infoVentasProducto}\n*Ultima fecha registrada:*\n📆 ${infoVentasFecha}`, true)

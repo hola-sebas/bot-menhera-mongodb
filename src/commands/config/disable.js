@@ -1,5 +1,4 @@
-const db = require('megadb')
-
+const guild = require('../../models/guild')
 module.exports = {
     name: 'disable',
     description: 'Desabilita un comado o categoria',
@@ -11,18 +10,16 @@ module.exports = {
     cooldown: 5,
 
     execute: async (message, args, prefix, client) => {
-        if (!message.member.permissions.has('ADMINISTRATOR')) {
-            message.channel.send('No tienes los permisos para ejecutar este comando').then(m => m.delete({ timeout: 5000 }))
-            return
-        }
-        let config = new db.crearDB(message.guild.id, 'servidores')
+        if (!message.member.permissions.has('ADMINISTRATOR'))return message.channel.send('No tienes los permisos para ejecutar este comando').then(m => m.delete({ timeout: 5000 }))
+
+        let config = await guild.findOne({guildId: message.guild.id})
         switch (args[0]) {
             case '-co':
                 if (!args[1]) return message.channel.send('Debes poner un comando')
                 let comando = args[1]
                 const command = client.commands.get(comando)
                     || client.commands.find((cmd) => cmd.aliases && cmd.aliases.includes(comando));
-                let disables = await config.obtener('configuracion.comandosDesactivados')
+                let disables = config.configuracion.comandosDesactivados
 
                 if (disables.includes(command.name)) {
                     message.channel.send('El comando ya esta desactivado')
@@ -33,7 +30,8 @@ module.exports = {
                     return
                 }
                 if (command) {
-                    config.push('configuracion.comandosDesactivados', command.name)
+                    config.configuracion.comandosDesactivados.push(command.name)
+                    config.save()
                     message.channel.send('Comando desactivado')
                     return
                 }
@@ -44,7 +42,7 @@ module.exports = {
                 if (!args[1]) return message.channel.send('Debes poner una categoria')
                 let categorias = client.categoria
                 let argumentos = args[1]
-                let ya = await config.obtener('configuracion.categoriasDesactivadas')
+                let ya = config.configuracion.categoriasDesactivadas
                 if (!categorias.includes(argumentos)) {
                     message.channel.send('Esa categoria no existe')
                     return
@@ -70,7 +68,8 @@ module.exports = {
                 }
 
                 if (categorias.includes(argumentos)) {
-                    config.push('configuracion.categoriasDesactivadas', argumentos)
+                    config.configuracion.categoriasDesactivadas.push(argumentos)
+                    config.save()
                     message.channel.send('Ok desabilite esa categoria')
                     return
                 }

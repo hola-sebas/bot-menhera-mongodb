@@ -1,6 +1,6 @@
 'use strict';
 const index = require('./index.json')
-const db = require('megadb')
+const user = require('../../models/user')
 module.exports = {
     name: 'craft',
     description: 'Crea items para venderlos',
@@ -27,8 +27,8 @@ module.exports = {
             }
         })
         if (await MatchMine(args[0])) return message.channel.send('Estas tratando de crear un mineral que se debe conseguir minando')
-        const config = new db.crearDB(message.author.id, 'usuarios')
-        let authorBag = await config.get('inventory.bag')
+        const config = await user.findOne({ userId: message.author.id })
+        let authorBag = config.inventory.bag
         if (materiales.length) {
             message.channel.send(`Materiales necesarios \`${materiales.join(', ')}\` \nReacciona a ✅ para craftearlo o ❌ para cancelar`).then(msg => {
                 msg.react('✅')
@@ -57,19 +57,20 @@ module.exports = {
                                 if (item.item == material) {
                                     let mapIndex = authorBag.findIndex(itemBag => itemBag.item == material)
                                     if (item.cantidad <= 1) {
-                                        config.delIndex('inventory.bag', mapIndex)
+                                        config.inventory.bag.splice(mapIndex, 1)
                                     } else {
-                                        config.setIndex('inventory.bag', mapIndex, { item: authorBag[mapIndex].item, cantidad: authorBag[mapIndex].cantidad - 1 })
+                                        config.inventory.bag.splice(mapIndex, 1, { item: authorBag[mapIndex].item, cantidad: authorBag[mapIndex].cantidad - 1 })
                                     }
                                 }
                             })
                         })
                         let indexBag = authorBag.findIndex(itemBag => itemBag.item == itemCraft)
                         if (indexBag == -1) {
-                            config.push('inventory.bag', { item: itemCraft, cantidad: 1 })
+                            config.inventory.bag.push({ item: itemCraft, cantidad: 1 })
                         } else {
-                            config.setIndex('inventory.bag', indexBag, { item: itemCraft, cantidad: authorBag[indexBag].cantidad + 1 })
+                            config.inventory.bag.splice(indexBag, 1, { item: itemCraft, cantidad: authorBag[indexBag].cantidad + 1 })
                         }
+                        config.save()
                         msg.delete()
                         message.channel.send(`Haz crafteado ${itemCraft}`)
                     }
@@ -92,15 +93,16 @@ module.exports = {
                     if (!coleccion) return
                     const emoji = coleccion.first()
                     if (emoji.emoji.name == '✅') {
-                        let moneyAuthor = await config.get('money.efectivo')
+                        let moneyAuthor = config.money.efectivo
                         if (itemCraft.length > moneyAuthor) return msg.delete(), message.channel.send(`No tienes ${itemCraft.length}\$ en efectivo`)
-                        config.restar('money.efectivo', itemCraft.length)
+                        config.money.efectivo -= itemCraft.length
                         let indexBag = authorBag.findIndex(itemBag => itemBag.item == itemCraft)
                         if (indexBag == -1) {
-                            config.push('inventory.bag', { item: itemCraft, cantidad: 1 })
+                            config.inventory.bag.push({ item: itemCraft, cantidad: 1 })
                         } else {
-                            config.setIndex('inventory.bag', indexBag, { item: itemCraft, cantidad: authorBag[indexBag].cantidad + 1 })
+                            config.inventory.bag.splice(indexBag, 1, { item: itemCraft, cantidad: authorBag[indexBag].cantidad + 1 })
                         }
+                        config.save()
                         msg.delete()
                         message.channel.send(`Haz crafteado ${itemCraft}`)
                     }

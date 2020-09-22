@@ -12,6 +12,7 @@ client.commands = new Discord.Collection();
 client.categoria = [];
 client.console = new Discord.Collection();
 
+
 //Ejecucion de scripts
 console.log("Ejecutando scripts\n");
 fs.readdirSync("./scripts").map(async (handler) => {
@@ -24,8 +25,9 @@ fs.readdirSync("./scripts").map(async (handler) => {
 });
 //Fin de la ejecucion de scripts
 
-
 var fin = Date.now();
+
+require('./database')
 process.emit("ok", `Cargado en ${fin - comienzo} ms\niniciando sesion en discord\n`);
 
 client.login(config.token).catch((err) => {

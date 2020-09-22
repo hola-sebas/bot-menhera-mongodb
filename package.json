@@ -1,11 +1,11 @@
 {
   "name": "bot-menhera",
-  "version": "3.8a.0",
+  "version": "3.8.0",
   "description": "Mi primer bot hecho en modo serio",
   "main": "index.js",
   "scripts": {
     "test": "node bot.js",
-    "start": "node ."
+    "start": "node src/index.js"
   },
   "keywords": [],
   "author": "DISCORD: Danny Palma uwu#0888(ID Discord: 355824156127920148)",

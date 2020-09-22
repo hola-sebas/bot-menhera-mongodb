@@ -1,29 +1,33 @@
-const db = require('megadb')
+// DONE
+
+const user = require('../../models/user')
 const render = require('../images/rank')
 module.exports = {
     run: async (message) => {
         if (message.author.bot) return
         setTimeout(async () => {
-            let config = new db.crearDB(message.author.id, 'usuarios')
-            let currentXP = await config.get('xp.actual')
-            let needXP = await config.get('xp.necesario')
-            currentXP = await config.add('xp.actual', (Math.round(Math.random() * message.content.length)))
+            let config = await user.findOne({ userId: message.author.id })
+            if (!config) return 
+            let currentXP = config.xp.actual += Math.round(Math.random() * message.content.length)
+            let needXP = config.xp.necesario
+
             if (needXP < currentXP) {
                 let xpRestante = currentXP - needXP
-                config.add('xp.nivel', 1)
-                config.set('xp.actual', xpRestante)
-                config.set('xp.necesario', (Math.floor((needXP * 3) / 2)))
+                config.xp.nivel += 1
+                config.xp.actual = xpRestante
+                config.xp.necesario = (Math.floor((needXP * 3) / 2))
 
-                let level = await config.get('xp.nivel')
-                needXP = await config.get('xp.necesario')
-                let curXp = await config.get('xp.actual')
-                let color = await config.get('xp.color')
-                let url = await config.get('xp.url')
+                let level = config.xp.nivel
+                needXP = config.xp.necesario
+                let curXp = config.xp.actual
+                let color = config.xp.color
+                let url = config.xp.url
                 message.channel.startTyping()
-                let img = await render.run(message.author, color, level, curXp, needXP, url).catch(err => console.log(err.toString()))
-                message.reply(`Has subido de nivel`, { files: [img] }).then(m => m.delete({ timeout: 10000 }))
+                let img = await render.run(message.author, color, level, curXp, needXP, url).catch(err => err)
+                message.reply(`Has subido de nivel`, { files: [img] }).then(m => m.delete({ timeout: 10000 })).catch(err => err)
                 message.channel.stopTyping()
             }
+            await config.save()
         }, 50)
     }
 }

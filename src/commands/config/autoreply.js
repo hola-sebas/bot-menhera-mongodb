@@ -1,4 +1,4 @@
-const db = require('megadb')
+const guild = require('../../models/guild')
 
 module.exports = {
     name: 'autoreply',
@@ -11,18 +11,18 @@ module.exports = {
     cooldown: 5,
 
     execute: async (message, args) => {
-        if (!message.member.permissions.has('ADMINISTRATOR')) {
-            message.channel.send('No tienes permisos para hacer eso ').then(m => m.delete({ timeout: 5000 }))
-            return
-        }
-        let config = new db.crearDB(message.guild.id, 'servidores')
-        let activado = await config.get('mensajes.autoReply')
+        if (!message.member.permissions.has('ADMINISTRATOR')) return message.channel.send('No tienes permisos para hacer eso ').then(m => m.delete({ timeout: 5000 }))
+
+        let config = await guild.findOne({ guildId: message.guild.id })
+        let activado = config.mensajes.autoReply
         if (activado == undefined || activado == true) {
-            config.establecer('mensajes.autoReply', false)
+            config.mensajes.autoReply = false
+            config.save()
             message.channel.send('Ok **Desactive** la respuesta automatica a mensajes')
         }
         if (activado == false) {
-            config.establecer('mensajes.autoReply', true)
+            config.mensajes.autoReply = true
+            config.save()
             message.channel.send('Ok **Active** la respuesta automatica a mensajes')
         }
     }

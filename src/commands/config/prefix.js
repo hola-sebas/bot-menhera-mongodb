@@ -1,4 +1,4 @@
-const db = require('megadb')
+const guild = require('../../models/guild')
 module.exports = {
     name: 'prefix',
     description: 'Selecciona el prefijo de tu preferencia',
@@ -9,11 +9,9 @@ module.exports = {
     disable: false,
 
     execute: async (message, args) => {
-        if (!message.member.permissions.has('ADMINISTRATOR')) {
-            message.channel.send('No tienes los permisos para ejecutar este comando').then(m => m.delete({ timeout: 5000 }))
-            return
-        }
-        let prefix = new db.crearDB(message.guild.id, 'servidores')
+        if (!message.member.permissions.has('ADMINISTRATOR')) return message.channel.send('No tienes los permisos para ejecutar este comando').then(m => m.delete({ timeout: 5000 }))
+
+        let prefix = await guild.findOne({ guildId: message.guild.id })
         let newprefix = args[0]
         if (!newprefix) {
             message.channel.send('Debes poner un prefix!')
@@ -23,7 +21,8 @@ module.exports = {
             message.channel.send('No puedes poner un prefijo mayor a 3 caracteres')
             return
         }
-        prefix.set('configuracion.prefix', newprefix)
+        prefix.configuracion.prefix = newprefix
+        prefix.save()
         message.channel.send(`ok ahora mi nuevo prefix va a ser ${newprefix}`)
     }
 }

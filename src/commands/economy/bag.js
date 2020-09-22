@@ -1,5 +1,5 @@
-const db = require('megadb'),
-    Discord = require('discord.js');
+const user = require('../../models/user')
+const Discord = require('discord.js');
 module.exports = {
     name: 'bag',
     description: 'Muestra las cosas que tienes en tu mochila',
@@ -10,8 +10,8 @@ module.exports = {
     disable: true,
 
     execute: async (message, args) => {
-        let config = new db.crearDB(message.author.id, 'usuarios')
-        let bag = await config.get('inventory.bag')
+        let config = await user.findOne({userId: message.author.id})
+        let bag = config.inventory.bag
 
         const embedBag = new Discord.MessageEmbed()
             .setAuthor(`Mochila de ${message.author.username}`, message.author.displayAvatarURL())

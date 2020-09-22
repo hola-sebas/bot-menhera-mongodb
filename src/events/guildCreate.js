@@ -1,7 +1,10 @@
 const ascii = require('ascii-table')
 module.exports = {
     name: 'guildCreate',
-    run: async (_client, guild) => {
+    run: async (client, guild) => {
+        let message = {}
+        message.guild = guild
+        require('../modules/GuildDatabase').run(message, client)
         console.log('\nMe añadieron a un servidor!!!');
         var tabla = new ascii().setHeading('Nombre', 'ID', 'Usuarios', 'Roles', 'Canales')
         var numUsu = 0
