@@ -1,6 +1,6 @@
 {
   "name": "bot-menhera",
-  "version": "3.8.0",
+  "version": "5.0.0",
   "description": "Mi primer bot hecho en modo serio",
   "main": "index.js",
   "scripts": {
