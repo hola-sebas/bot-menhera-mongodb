@@ -1,7 +1,7 @@
 console.log('Conectando a la base de datos');
 const mongoose = require('mongoose')
-
-mongoose.connect('mongodb+srv://danny:MVAK2mc0r2M95d8u@cluster.worgv.gcp.mongodb.net/?retryWrites=true&w=majority', {
+const config = require('./config.json')
+mongoose.connect(`mongodb+srv://${config.mongodbUser}:${config.dbPassword}@cluster.worgv.gcp.mongodb.net/?retryWrites=true&w=majority`, {
     useCreateIndex: true,
     useNewUrlParser: true,
     useFindAndModify: false,
