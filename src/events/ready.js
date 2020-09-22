@@ -11,7 +11,7 @@ module.exports = {
       var estados = [`guilds: ${client.guilds.cache.size}`, `version: ${version}`, `usuarios: ${client.users.cache.size}`]
       var estadosRandom = Math.floor(Math.random() * estados.length)
       client.user.setPresence({
-        status: "idle",
+        status: "dnd",
         activity: {
           name: estados[estadosRandom],
           type: 'LISTENING'
