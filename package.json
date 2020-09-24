@@ -22,7 +22,7 @@
     "moment-duration-format": "^2.3.2",
     "mongoose": "^5.10.6",
     "nekos.life": "^2.0.7",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "swiftcord": "^2.1.5",
     "tnai": "^1.0.3",
     "zeew": "^0.1.7"
