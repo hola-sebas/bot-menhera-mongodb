@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "node bot.js",
-    "start": "node src/index.js"
+    "start": "echo iniciando && cd src && node index.js"
   },
   "keywords": [],
   "author": "DISCORD: Danny Palma uwu#0888(ID Discord: 355824156127920148)",
