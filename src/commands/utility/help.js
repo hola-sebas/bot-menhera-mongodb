@@ -1,6 +1,7 @@
 const fs = require('fs')
 const discord = require('discord.js')
 const version = require('../../../package.json')
+const notificationsdb = require('../../models/notifications')
 
 module.exports = {
     name: 'help',
@@ -30,6 +31,10 @@ module.exports = {
                 .addField('• Enlaces útiles:', '[Donaciones](https://ko-fi.com/bototaku) ║ [Documentacion](https://no-hayxd.com) ║ [Soporte](https://discord.gg/KxNHeaz) ║ [Invitame](https://discord.com/oauth2/authorize?client_id=732398026878091284&scope=bot&permissions=8) ║ [Repositorio](https://github.com/hola-sebas/bot-menhera)')
                 .setFooter(`${client.user.username} version ${version.version}`, client.user.displayAvatarURL())
                 .setThumbnail('https://cdn.discordapp.com/attachments/736287295522603098/742490666692509776/274-2748314_freetoedit-menherachan-animegirl-animecute-png-kawaii-anime-girl.png')
+            let notificacion = (await notificationsdb.find())[0]
+            if (notificacion) {
+                embed.addField(notificacion.title, `${notificacion.body}\n\n\`${notificacion.date}\``)
+            }
             message.channel.send(embed)
             return
         }
