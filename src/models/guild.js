@@ -3,7 +3,7 @@ const { Schema } = mongoose
 
 const guildSchema = new Schema({
     guildId: {
-        type: Number,
+        type: String,
         unique: true
     },
     configuracion: {
@@ -19,11 +19,11 @@ const guildSchema = new Schema({
         welcome: {
             img: String,
             message: String,
-            channel: Number
+            channel: String
         },
         goodbye: {
             message: String,
-            channel: Number
+            channel: String
         }
     }
 })

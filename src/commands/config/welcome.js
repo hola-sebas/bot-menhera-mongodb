@@ -46,7 +46,7 @@ module.exports = {
                         message.channel.send('El canal de bienvenidas ya esta desabilitado')
                         return
                     }
-                    config.mensajes.welcome.channel = 0;
+                    config.mensajes.welcome.channel = '0';
                     config.save()
                     message.channel.send('Ok desabilite el canal de bienvenidas')
                     return

@@ -19,11 +19,11 @@ module.exports = {
                 welcome: {
                     img: 'https://images2.alphacoders.com/103/1039991.jpg',
                     message: 'Bienvenido al server',
-                    channel: 0
+                    channel: '0'
                 },
                 goodbye: {
                     message: 'Se fue de el server',
-                    channel: 0
+                    channel: '0'
                 }
             }
         })
