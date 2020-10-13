@@ -33,7 +33,7 @@ module.exports = {
                 .setThumbnail('https://cdn.discordapp.com/attachments/736287295522603098/742490666692509776/274-2748314_freetoedit-menherachan-animegirl-animecute-png-kawaii-anime-girl.png')
             let notificacion = (await notificationsdb.find())[0]
             if (notificacion) {
-                embed.addField(notificacion.title, `${notificacion.body}\n\n\`${notificacion.date}\``)
+                embed.addField(notificacion.title, `${notificacion.body}\n\n\`${notificacion.date.toUTCString()}\``)
             }
             message.channel.send(embed)
             return
