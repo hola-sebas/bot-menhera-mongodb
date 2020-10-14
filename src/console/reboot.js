@@ -9,7 +9,7 @@ module.exports = {
         xde.stdout.on("data", d => {
             console.log(d.toString());
         })
-        xde.stderr.on("data", d => {
+        xde.stderr.on("error", d => {
             console.error(d);
         })
 
