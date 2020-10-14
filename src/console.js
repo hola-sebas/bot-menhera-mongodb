@@ -21,9 +21,9 @@ Copyright (c) Daniel Alejandro Palma Garcia. Todos los derechos reservados.`);
         const command = client.console.get(commandName);
         if (!command) return console.log(chalk.hex('#FF8800')(`El comando ${commandName} no existe`)), y();
         await command.execute(client, chalk, args);
-        y()
+        y();
     })
-    y()
+    y();
 }
 
 function y() {
