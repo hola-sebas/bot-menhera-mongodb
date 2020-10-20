@@ -4,7 +4,7 @@ const { Schema } = mongoose
 
 const userSchema = new Schema({
     userId: {
-        type: Number,
+        type: String,
         required: true
     },
     money: {
