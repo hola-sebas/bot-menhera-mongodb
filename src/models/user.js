@@ -17,7 +17,7 @@ const userSchema = new Schema({
         nivel: Number,
         url: {
             type: String,
-            default: 'https://images2.alphacoders.com/103/1039991.jpg'
+            default: 'https://menherachan.herokuapp.com/images/backgroundimage.jpg'
         },
         color: {
             type: String,

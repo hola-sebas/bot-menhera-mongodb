@@ -17,7 +17,7 @@ module.exports = {
             mensajes: {
                 autoReply: true,
                 welcome: {
-                    img: 'https://images2.alphacoders.com/103/1039991.jpg',
+                    img: 'https://menherachan.herokuapp.com/images/backgroundimage.jpg',
                     message: 'Bienvenido al server',
                     channel: '0'
                 },
