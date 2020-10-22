@@ -21,6 +21,7 @@ module.exports = {
         let url = config.xp.url
         try {
             let img = await render.run(user, color, level, curXp, needXP, url)
+            if(!img) throw 'No se ha podido renderizar la terjeta de xp por favor ejecuta xpcard y cambia la imagen de fondo';
             message.channel.send({ files: [img] })
             message.channel.stopTyping()
         } catch (err) {

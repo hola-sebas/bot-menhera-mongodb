@@ -13,9 +13,7 @@ module.exports = {
         const lienzo = canvas.createCanvas(934, 282)
         const ctx = lienzo.getContext('2d')
         let opacity = 0.5
-        let b = await canvas.loadImage(bg).catch(err=>{
-            throw err
-        })
+        let b = await canvas.loadImage(bg)
         let avatar = await canvas.loadImage(user.displayAvatarURL({ dynamic: false, size: 1024, format: "png" }))
         let temp = lienzo.width - 250
         //Fondo
@@ -42,7 +40,7 @@ module.exports = {
         ctx.clip();
         ctx.fillStyle = "#090A0B";
         ctx.globalAlpha = 0.7;
-        
+
         ctx.fillRect(38, 58, 168, 168);
         ctx.restore()
 
@@ -59,7 +57,7 @@ module.exports = {
         ctx.globalAlpha = 0.5;
         roundRect(ctx, 258, 184, 632, 36, 24, true);
         ctx.restore()
-        
+
         ctx.fillStyle = "#000000";
         ctx.globalAlpha = 0.8;
         roundRect(ctx, 256, 182, 636, 40, 25, true);
