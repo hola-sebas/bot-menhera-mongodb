@@ -66,7 +66,7 @@ module.exports = {
             case 'message':
                 let mensaje = args.slice(1).join(' ')
                 if (!mensaje.length) {
-                    message.channel.send('Debes poner un mensaje de bienvenida, puedes usar <{member}, {guild} y {membercount}>')
+                    message.channel.send('Debes poner un mensaje de bienvenida, puedes usar <{member} / @{member}, {guild} y {membercount}>')
                     return
                 }
                 if (mensaje == 'del') {
