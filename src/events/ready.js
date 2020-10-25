@@ -1,7 +1,7 @@
 const commandsDB = require("../models/commands");
 module.exports = {
   name: 'ready',
-  run: (client) => {
+  run: async (client) => {
     console.log(`El bot ${client.user.username} esta listo!`);
     setInterval(() => {
       var estados = [
