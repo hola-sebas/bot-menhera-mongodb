@@ -23,7 +23,8 @@ module.exports = {
       commands: client.commands.array(),
       categories: client.categoria.map(c => {
         const category = require(`../commands/${c}/index.json`);
-        return category
+        category.name = c;
+        return category;
       })
     });
     await newCommands.save()
