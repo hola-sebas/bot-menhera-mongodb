@@ -1,3 +1,4 @@
+const commandsDB = require("../models/commands");
 module.exports = {
   name: 'ready',
   run: (client) => {
@@ -17,6 +18,11 @@ module.exports = {
         }
       });
     }, 10000);
-    if(process.env.NODE_ENV != "production") require("../console")(client);
+    await commandsDB.deleteMany()
+    let newCommands = new commandsDB({
+      commands: client.commands.array()
+    });
+    await newCommands.save().then(console.log)
+    if (process.env.NODE_ENV != "production") require("../console")(client);
   }
 }
