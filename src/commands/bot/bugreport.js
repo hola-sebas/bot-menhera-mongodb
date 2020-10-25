@@ -1,12 +1,12 @@
 const bugs = require('../../models/bugs')
-
+require('path').sep
 module.exports = {
     name: 'bugreport',
     description: 'Reporta un bug que encontraste por ahí',
     usage: 'bugreport <bug>',
     aliases: ['bug'],
     permissions: ['SEND_MESSAGES', 'VIEW_CHANNEL'],
-    category: __dirname.split('\\').pop(),
+    category: __dirname.split(require('path').sep).pop(),
     disable: true,
     cooldown: 120,
     execute: async (message, args) => {

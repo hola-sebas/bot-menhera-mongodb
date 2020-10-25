@@ -5,7 +5,7 @@ module.exports = {
     usage: 'disable < -c(categoria) / -co(comando)> <nombre>',
     aliases: ['dis'],
     permissions: ['SEND_MESSAGES', 'VIEW_CHANNEL'],
-    category: __dirname.split('\\').pop(),
+    category: __dirname.split(require('path').sep).pop(),
     disable: false,
     cooldown: 5,
 

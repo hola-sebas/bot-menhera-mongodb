@@ -6,7 +6,7 @@ module.exports = {
     description: 'Crea items para venderlos',
     usage: 'craft < item >',
     permissions: ['SEND_MESSAGES', 'VIEW_CHANNEL', 'MANAGE_MESSAGES'],
-    category: __dirname.split('\\').pop(),
+    category: __dirname.split(require('path').sep).pop(),
     disable: true,
     execute: async (message, args) => {
         let itemCraft = args.join(' ')

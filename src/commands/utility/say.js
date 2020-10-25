@@ -4,7 +4,7 @@ module.exports = {
     description: 'Dime que tengo que decir',
     usage: 'say (canal) <mensaje>',
     permissions: ['SEND_MESSAGES', 'VIEW_CHANNEL', 'EMBED_LINKS', 'MANAGE_MESSAGES'],
-    category: __dirname.split('\\').pop(),
+    category: __dirname.split(require('path').sep).pop(),
     disable: true,
     execute: async (message, args, prefix) => {
         if (!message.member.permissions.has('ADMINISTRATOR')) return message.channel.send('Lo siento pero no tienes permisos para ejecutar este comando').then(m => m.delete({ timeout: 5000 }))

@@ -6,7 +6,7 @@ module.exports = {
     name: 'happy',
     description: 'Because I\'m happy\nClap along if you feel like happiness is the truth🎼',
     usage: 'happy',
-    category: __dirname.split('\\').pop(),
+    category: __dirname.split(require('path').sep).pop(),
     permissions: ['SEND_MESSAGES', 'VIEW_CHANNEL', 'EMBED_LINKS'],
     disable: true,
     execute: async (message, args) => {

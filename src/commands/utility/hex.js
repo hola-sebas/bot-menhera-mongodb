@@ -6,7 +6,7 @@ module.exports = {
     description: 'Dame un color en formato hex y le lo devuelvo en una imagen',
     usage: 'hex <#color>',
     permissions: ['SEND_MESSAGES', 'VIEW_CHANNEL', 'EMBED_LINKS'],
-    category: __dirname.split('\\').pop(),
+    category: __dirname.split(require('path').sep).pop(),
     disable: true,
     execute: async (message, args) => {
         var color = args[0]

@@ -5,7 +5,7 @@ module.exports = {
     usage: 'prefix <prefijo>',
     aliases: ['setprefix', 'setprefijo', 'prefijo'],
     permissions: ['SEND_MESSAGES', 'VIEW_CHANNEL'],
-    category: __dirname.split('\\').pop(),
+    category: __dirname.split(require('path').sep).pop(),
     disable: false,
 
     execute: async (message, args) => {

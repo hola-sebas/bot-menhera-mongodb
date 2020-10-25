@@ -4,7 +4,7 @@ module.exports = {
     description: 'Te envio un chiste totalmente aleatorio y malo',
     usage: 'chiste',
     permissions: ['SEND_MESSAGES', 'VIEW_CHANNEL'],
-    category: __dirname.split('\\').pop(),
+    category: __dirname.split(require('path').sep).pop(),
     disable: true,
     execute: async (message, args) => {
         fetch('http://risapi.glitch.me/')

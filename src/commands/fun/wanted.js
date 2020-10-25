@@ -5,7 +5,7 @@ module.exports = {
     description: 'Es buscado',
     usage: 'wanted',
     permissions: ['SEND_MESSAGES', 'VIEW_CHANNEL', 'ATTACH_FILES'],
-    category: __dirname.split('\\').pop(),
+    category: __dirname.split(require('path').sep).pop(),
     disable: true,
     execute: async (message, args) => {
         let user = message.mentions.users.first() || message.author

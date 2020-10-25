@@ -6,7 +6,7 @@ module.exports = {
     name: 'greeting',
     description: 'Saluda a alguien',
     usage: 'greeting <@usuario>',
-    category: __dirname.split('\\').pop(),
+    category: __dirname.split(require('path').sep).pop(),
     permissions: ['SEND_MESSAGES', 'VIEW_CHANNEL', 'EMBED_LINKS'],
     disable: true,
     execute: async (message, args, prefix, client) => {

@@ -5,7 +5,7 @@ module.exports = {
     description: 'Configura las despedidas',
     usage: 'goodbye < channel o chnl / message o msg >',
     permissions: ['SEND_MESSAGES', 'VIEW_CHANNEL', 'EMBED_LINKS'],
-    category: __dirname.split('\\').pop(),
+    category: __dirname.split(require('path').sep).pop(),
     disable: false,
     execute: async (message, args) => {
         if (!message.member.permissions.has('ADMINISTRATOR')) return message.channel.send('No tienes permisos para ejecutar este comando')

@@ -5,7 +5,7 @@ module.exports = {
     name: 'work',
     description: 'Trabaja como un buen ser humano',
     usage: 'work',
-    category: __dirname.split('\\').pop(),
+    category: __dirname.split(require('path').sep).pop(),
     disable: true,
     cooldown: 10,
     permissions: ['SEND_MESSAGES', 'VIEW_CHANNEL', 'EMBED_LINKS'],

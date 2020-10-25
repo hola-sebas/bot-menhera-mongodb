@@ -5,7 +5,7 @@ module.exports = {
     name: 'xpcard',
     description: 'Configura la imagen de fondo de tu tarjeta de xp y tambien el color (opcional)',
     usage: 'xpcard <link> (color)',
-    category: __dirname.split('\\').pop(),
+    category: __dirname.split(require('path').sep).pop(),
     permissions: ['SEND_MESSAGES', 'VIEW_CHANNEL', 'ATTACH_FILES'],
     disable: false,
     cooldown: 10,

@@ -6,7 +6,7 @@ module.exports = {
     description: 'usa un objeto de tu inventario',
     usage: 'use < item >',
     permissions: ['SEND_MESSAGES', 'VIEW_CHANNEL', 'EMBED_LINKS'],
-    category: __dirname.split('\\').pop(),
+    category: __dirname.split(require('path').sep).pop(),
     disable: true,
     execute: async (message, args) => {
         const itemToUse = args.join(' ')
