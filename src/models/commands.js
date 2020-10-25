@@ -5,6 +5,10 @@ const guildSchema = new Schema({
     commands: {
         type: Array,
         required: true
+    },
+    categories:{
+        type: Array,
+        required: true
     }
 })
 

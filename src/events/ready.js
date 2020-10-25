@@ -20,9 +20,13 @@ module.exports = {
     }, 10000);
     await commandsDB.deleteMany()
     let newCommands = new commandsDB({
-      commands: client.commands.array()
+      commands: client.commands.array(),
+      categories: client.categoria.map(c => {
+        const category = require(`../commands/${c}/index.json`);
+        return category
+      })
     });
-    await newCommands.save().then(console.log)
+    await newCommands.save()
     if (process.env.NODE_ENV != "production") require("../console")(client);
   }
 }
