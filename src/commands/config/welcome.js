@@ -8,7 +8,7 @@ module.exports = {
     category: __dirname.split(require('path').sep).pop(),
     disable: false,
     execute: async (message, args) => {
-        // if (!message.member.permissions.has('ADMINISTRATOR')) return message.channel.send('No tienes permisos para ejecutar este comando')
+        if (!message.member.permissions.has('ADMINISTRATOR')) return message.channel.send('No tienes permisos para ejecutar este comando')
         if (!args[0]) return message.channel.send('Debes especificar una accion a realizar asi <card / channel / message>')
         const config = await guild.findOne({ guildId: message.guild.id })
         switch (args[0]) {
