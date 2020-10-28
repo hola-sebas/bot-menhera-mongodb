@@ -4,7 +4,7 @@ module.exports = {
     usage: 'kick <@usuario>',
     aliases:['ki','ck'],
     permissions: ['SEND_MESSAGES', 'VIEW_CHANNEL', 'KICK_MEMBERS', 'ADD_REACTIONS'],
-    category: __dirname.split('\\').pop(),
+    category: __dirname.split(require('path').sep).pop(),
     disable: false,
 
     execute: async(message, args)=>{

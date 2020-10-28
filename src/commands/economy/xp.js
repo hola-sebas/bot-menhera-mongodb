@@ -4,7 +4,7 @@ module.exports = {
     name: 'xp',
     description: 'Muestra tu xp actual o de otro usuario',
     usage: 'xp (mencion)',
-    category: __dirname.split('\\').pop(),
+    category: __dirname.split(require('path').sep).pop(),
     permissions: ['SEND_MESSAGES', 'VIEW_CHANNEL', 'ATTACH_FILES'],
     disable: true,
     cooldown: 30,

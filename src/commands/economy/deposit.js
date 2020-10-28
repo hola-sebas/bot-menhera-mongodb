@@ -4,7 +4,7 @@ module.exports = {
     description: 'Deposita tu dinero en el banco',
     usage: 'deposit < cantidad / all >',
     permissions: ['SEND_MESSAGES', 'VIEW_CHANNEL', 'EMBED_LINKS'],
-    category: __dirname.split('\\').pop(),
+    category: __dirname.split(require('path').sep).pop(),
     disable: true,
     execute: async (message, args) => {
         if (!args.length) return message.channel.send('Debes poner una cantidad a depositar o all para depositar todo')

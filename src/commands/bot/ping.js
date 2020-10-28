@@ -5,7 +5,7 @@ module.exports = {
     description: 'Muestra el ping entre la API de Discord y el bot',
     usage: 'ping',
     permissions: ['SEND_MESSAGES', 'VIEW_CHANNEL', 'EMBED_LINKS'],
-    category: __dirname.split('\\').pop(),
+    category: __dirname.split(require('path').sep).pop(),
     disable: true,
 
     execute: async (message, args) => {

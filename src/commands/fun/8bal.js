@@ -4,7 +4,7 @@ module.exports = {
     description: 'Preguntame cualquier cosa y yo te responeré con un si o no',
     usage: '8ball <pregunta>',
     permissions: ['SEND_MESSAGES', 'VIEW_CHANNEL', 'EMBED_LINKS'],
-    category: __dirname.split('\\').pop(),
+    category: __dirname.split(require('path').sep).pop(),
     disable: true,
     execute: async (message, args) => {
         if(!args.length) return message.channel.send('Debes poner uan pregunta')

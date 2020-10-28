@@ -6,7 +6,7 @@ module.exports = {
     description: 'Compra, vende y revisa la tienda de otros jugadores',
     usage: 'shop < buy / shell / show / cancel / open / close / info >',
     permissions: ['SEND_MESSAGES', 'VIEW_CHANNEL', 'EMBED_LINKS'],
-    category: __dirname.split('\\').pop(),
+    category: __dirname.split(require('path').sep).pop(),
     disable: true,
     execute: async (message, args, prefix, client) => {
         const accion = args[0]

@@ -5,7 +5,8 @@ const { Schema } = mongoose
 const userSchema = new Schema({
     userId: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     money: {
         efectivo: Number,
@@ -27,7 +28,10 @@ const userSchema = new Schema({
     inventory: {
         bag: Array,
         shop: {
-            open: Boolean,
+            open: {
+                type: Boolean,
+                default: false
+            },
             ventas: {
                 usuario: String,
                 producto: String

@@ -4,7 +4,7 @@ module.exports = {
     description: 'Te envio informacion hacerca de las donaciones',
     usage: 'donate',
     permissions: ['SEND_MESSAGES', 'VIEW_CHANNEL'],
-    category: __dirname.split('\\').pop(),
+    category: __dirname.split(require('path').sep).pop(),
     disable: true,
     execute: async (message, args) => {
         const exampleEmbed = new Discord.MessageEmbed()

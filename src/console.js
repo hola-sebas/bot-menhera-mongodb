@@ -14,7 +14,7 @@ Copyright (c) Daniel Alejandro Palma Garcia. Todos los derechos reservados.`);
     });
     var consola = process.openStdin();
     consola.addListener("data", async d => {
-        var data = d.toString().toLowerCase().trim();
+        var data = d.toString().trim();
         if (!data) return y();
         const args = data.slice().trim().split(/ +/);
         const commandName = args.shift().toLowerCase();

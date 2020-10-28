@@ -19,6 +19,11 @@ module.exports = {
         msg = msg.replace(/{membercount}/g, member.guild.memberCount)
 
         let canal = client.channels.cache.find(c => c.id == buscar)
+        if (!member.guild.me.permissionsIn(canal).has(["SEND_MESSAGES", "EMBED_LINKS", "ATTACH_FILES"])) {
+            let a = member.guild.ownerID;
+            client.users.cache.find(c => c.id == a).send(`**ATENCION** no puedo enviar mensajes en el canal ${canal.name} revisa los permisos y reconfigura el canal de bienvenidas`)
+            return
+        };
         const render = require('../modules/images/card.js')
         let imagen = await render.run(member.user, img).catch(err => err)
         canal.send(`${msg}`, { files: [imagen] }).catch(err => err)

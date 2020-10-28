@@ -1,6 +1,7 @@
+const commandsDB = require("../models/commands");
 module.exports = {
   name: 'ready',
-  run: (client) => {
+  run: async (client) => {
     console.log(`El bot ${client.user.username} esta listo!`);
     setInterval(() => {
       var estados = [
@@ -17,6 +18,16 @@ module.exports = {
         }
       });
     }, 10000);
-    if (process.env.NODE_ENV != 'production') require("../console")(client);
+    await commandsDB.deleteMany()
+    let newCommands = new commandsDB({
+      commands: client.commands.array(),
+      categories: client.categoria.map(c => {
+        const category = require(`../commands/${c}/index.json`);
+        category.name = c;
+        return category;
+      })
+    });
+    await newCommands.save()
+    if (process.env.NODE_ENV != "production") require("../console")(client);
   }
 }

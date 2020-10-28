@@ -6,7 +6,7 @@ module.exports = {
     name: 'bored',
     description: 'Estas aburrido?',
     usage: 'bored',
-    category: __dirname.split('\\').pop(),
+    category: __dirname.split(require('path').sep).pop(),
     permissions: ['SEND_MESSAGES', 'VIEW_CHANNEL', 'EMBED_LINKS'],
     disable: true,
     execute: async (message, args) => {

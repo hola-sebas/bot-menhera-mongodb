@@ -7,7 +7,7 @@ module.exports = {
     usage: 'rob <@usuario>',
     permissions: ['SEND_MESSAGES', 'VIEW_CHANNEL', 'EMBED_LINKS'],
     cooldown: 7200,
-    category: __dirname.split('\\').pop(),
+    category: __dirname.split(require('path').sep).pop(),
     disable: true,
     execute: async (message, args, prefix, client) => {
         let usuRobado = message.mentions.users.first()

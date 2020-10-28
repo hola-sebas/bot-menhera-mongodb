@@ -3,7 +3,7 @@ module.exports = {
     description: 'Si se lo merece no lo pienses dos veces (⌐■_■)',
     usage: 'ban <@usuario>',
     permissions: ['SEND_MESSAGES', 'VIEW_CHANNEL', 'BAN_MEMBERS', 'ADD_REACTIONS'],
-    category: __dirname.split('\\').pop(),
+    category: __dirname.split(require('path').sep).pop(),
     disable: false,
 
     execute: async(message, args)=>{

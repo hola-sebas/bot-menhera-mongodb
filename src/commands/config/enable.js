@@ -4,7 +4,7 @@ module.exports = {
     description: 'Activa un comado o categoria que ya este desabilitado',
     usage: 'enable < -c(categoria) / -co(comando) > <nombre>',
     permissions: ['SEND_MESSAGES', 'VIEW_CHANNEL'],
-    category: __dirname.split('\\').pop(),
+    category: __dirname.split(require('path').sep).pop(),
     disable: false,
     cooldown: 5,
 

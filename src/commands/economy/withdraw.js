@@ -4,7 +4,7 @@ module.exports = {
     description: 'Saca dinero de tu banco',
     usage: 'withdraw < [cantidad] / all >',
     permissions: ['SEND_MESSAGES', 'VIEW_CHANNEL'],
-    category: __dirname.split('\\').pop(),
+    category: __dirname.split(require('path').sep).pop(),
     disable: true,
     execute: async (message, args) => {
         if (!args[0]) return message.channel.send('Debes colocar un numero o all')
