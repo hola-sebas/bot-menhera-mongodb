@@ -17,6 +17,6 @@ module.exports = {
         }
       });
     }, 10000);
-    // require("../console")(client);
+    if (process.env.NODE_ENV != 'production') require("../console")(client);
   }
 }
