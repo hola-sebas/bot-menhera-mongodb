@@ -9,7 +9,8 @@ module.exports = {
     category: __dirname.split(require('path').sep).pop(),
     disable: true,
     execute: async (message, args) => {
-        const config = await user.findOne({ userId: message.author.id })
+        let mentionUser = message.mentions.users.first() || message.author
+        const config = await user.findOne({ userId: mentionUser.id })
         let efectivo = config.money.efectivo
         let banco = config.money.bank
         const embedBalance = new Discord.MessageEmbed()
