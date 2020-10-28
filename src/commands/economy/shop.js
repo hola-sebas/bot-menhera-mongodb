@@ -94,7 +94,8 @@ module.exports = {
                     .setColor('RANDOM')
                 let usuMencion = message.mentions.users.first() || message.author
                 if (usuMencion.bot) return message.channel.send('Los bots no pueden tener una tienda :(')
-                const dbUsu = await user.findOne({ userId: usuMencion })
+                const dbUsu = await user.findOne({ userId: usuMencion.id });
+                if(!dbUsu) return message.channel.send(`hmm al parecer el no existe en mi base de datos`)
                 let usuMencionShop = dbUsu.inventory.shop.productos
                 if (!usuMencionShop.length) {
                     embedShopShow.setTitle(`Tienda de ${usuMencion.tag}`)
