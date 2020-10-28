@@ -7,7 +7,7 @@ const Discord = require("discord.js"),
   config = require("./config.json"),
   readline = require("readline");
 
-const client = new Discord.Client();
+const client = new Discord.Client({ ws: { intents: 32767 } });
 client.commands = new Discord.Collection();
 client.categoria = [];
 client.console = new Discord.Collection();
