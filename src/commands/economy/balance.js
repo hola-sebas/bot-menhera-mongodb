@@ -14,12 +14,16 @@ module.exports = {
         let efectivo = config.money.efectivo
         let banco = config.money.bank
         const embedBalance = new Discord.MessageEmbed()
-            .setTitle('Acerca de tu dinero')
             .addField('💸 Dinero en efectivo:', efectivo)
             .addField('💰 Dinero en el banco:', banco)
             .setColor('RANDOM')
             .setThumbnail('https://i.pinimg.com/236x/e1/8f/7f/e18f7f366746dfe6026a81eac8e982f5.jpg')
             .setFooter('Consultado por: ' + message.member.displayName, message.author.displayAvatarURL())
+        if (mentionUser.id == message.author.id) {
+            embedBalance.setTitle('Acerca de tu dinero')
+        } else {
+            embedBalance.setTitle(`Acerca del dinero de ${mentionUser.username}`)
+        };
         message.channel.send(embedBalance)
     }
 }
