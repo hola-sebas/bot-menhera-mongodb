@@ -4,11 +4,13 @@ export default {
     "mongodbPassword": "IHNxy9ZrebGz0zy3",
     "mongodbUser": "danny",
     "database": "production",
+    "clientID": "732398026878091284",
     // dev mode
     "devToken": "NzQwNzU4MDIzNDc5NDkyNjE5.Xytqqw.wq6B2XwmULf25wuze7xD4i24UYU",
     "devMongodbPassword": "3fQfkk4pLwKSL2yS",
     "devMongodbUser": "UserTest",
     "devDatabase": "test",
+    "devClientID": "740758023479492619",
     //any mode
     "prefix": "ki!"
 }
