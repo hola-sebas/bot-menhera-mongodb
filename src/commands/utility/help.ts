@@ -21,15 +21,15 @@ export default new class command_help implements bot_commands {
             || client.commands.find((cmd) => cmd.aliases?.includes(argumentos) || false);
 
         if (!args.length) {
-            var stringCategoryes: string = "";
+            var stringcategories: string = "";
             carpetas.forEach((category, key) => {
-                stringCategoryes = `${stringCategoryes}\n\`${prefix}help ${key}\` ║ ${category.description}`;
+                stringcategories = `${stringcategories}\n\`${prefix}help ${key}\` ║ ${category.description}`;
             })
             const embed = new discord.MessageEmbed()
                 .setTitle(`Comados de ${client.user.username}`)
                 .setDescription(`Ahora mismo hay \`${carpetas.size}\` categorias y \`${client.commands.size.toString()}\` comandos para ti\n`)
                 .setColor('RANDOM')
-                .addField('• Categorias', stringCategoryes)
+                .addField('• Categorias', stringcategories)
                 .addField('• Enlaces útiles:', ['[Donaciones](https://ko-fi.com/bototaku) ',
                     '║ [Nueva! Dashboard](https://menherachan.herokuapp.com) ',
                     '║ [Soporte](https://discord.gg/KxNHeaz) ',
