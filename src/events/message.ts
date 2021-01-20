@@ -64,14 +64,14 @@ export default new class event_message {
         const commandName = args.shift()?.toLowerCase() || "";
 
         let disabled_commands = configuracion.configuracion.comandosDesactivados
-        let disabled_categoryes = configuracion.configuracion.categoriasDesactivadas
+        let disabled_categories = configuracion.configuracion.categoriasDesactivadas
 
         const command = client.commands.get(commandName)
             || client.commands.find((cmd) => cmd.aliases?.includes(commandName) || false);
 
         if (!command) return;
 
-        if (disabled_categoryes.includes(command.category || "")) {
+        if (disabled_categories.includes(command.category || "")) {
             if (process.env.NODE_ENV != "production") message.channel.send(`La categoria ${command.category} esta desactivada`);
             return;
         }
