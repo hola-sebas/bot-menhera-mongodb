@@ -1,38 +1,48 @@
 import IClient from "../@types/discord-client";
-import commandsDB from "../models/commands";
+import { PresenceData } from "discord.js";
 
-export default new class event_ready {
+var ev = new class event_ready {
   name = 'ready';
   run = async (client: IClient) => {
     if (!client.user) {
-      console.error("el usuario es indefinido!"); process.exit()
+      console.error("el usuario es indefinido!");
+      process.exit();
     }
-    console.log(`El bot ${client.user.username} esta listo!`);
+
+    // ! bot presence
     setInterval(() => {
-      var estados = [
-        `guilds: ${client.guilds.cache.size}`,
-        `version: ${require('../../package.json').version}`,
-        `usuarios: ${client.users.cache.size}`
-      ];
-      var estadosRandom = Math.floor(Math.random() * estados.length);
       client.user.setPresence({
-        status: "online",
-        activity: {
-          name: estados[estadosRandom],
-          type: 'LISTENING'
-        }
+        activity: states[statesCount],
+        status: "online"
       });
-    }, 10000);
-    // await commandsDB.deleteMany()
-    // let newCommands = new commandsDB({
-    //   commands: client.commands.array(),
-    //   categories: client.categoria.map(c => {
-    //     const category = require(`../commands/${c}/index.json`);
-    //     category.name = c;
-    //     return category;
-    //   })
-    // });
-    // await newCommands.save()
-    // if (process.env.NODE_ENV != "production") require("../console")(client);
+      statesCount++;
+      if(statesCount >= states.length) statesCount = 0;
+
+    }, 15000);
+    var statesCount = 0;
+    var states: PresenceData["activity"][] = [
+      {
+        name: "nueva pagina :D",
+        type: "WATCHING",
+        url: "https://menherachan.herokuapp.com",
+      },
+      {
+        name: `${client.users.cache.size} Usuarios`,
+        type: "WATCHING"
+      },
+      {
+        name: `${client.guilds.cache.size} Servidores`,
+        type: "WATCHING"
+      },
+      {
+        name: `${client.channels.cache.size} Canales`,
+        type: "WATCHING"
+      },
+
+    ]
+    console.log(`El bot ${client.user.username} esta listo!`);
   }
 }
+
+
+export default ev;
