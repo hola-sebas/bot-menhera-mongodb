@@ -1,14 +1,15 @@
 {
   "name": "bot-menhera",
   "version": "5.0.0",
-  "description": "Mi primer bot hecho en modo serio",
+  "description": "Discord bot",
   "main": "./dist/index.js",
   "scripts": {
+    "prestart": "tsc",
     "start": "cd dist && node index.js",
-    "postinstall": "tsc"
+    "dev": "nodemon"
   },
   "keywords": [],
-  "author": "DISCORD: Danny Palma uwu#0888(ID Discord: 355824156127920148)",
+  "author": "Danny Palma, discordID: 355824156127920148",
   "license": "ISC",
   "dependencies": {
     "ascii-table": "0.0.9",
@@ -28,6 +29,7 @@
   "devDependencies": {
     "@types/hex-color-regex": "^1.1.0",
     "@types/node-fetch": "^2.5.8",
+    "nodemon": "^2.0.7",
     "typescript": "^4.1.3"
   }
 }
