@@ -1,16 +1,16 @@
 export default {
     // production mode
     "token": "NzMyMzk4MDI2ODc4MDkxMjg0.Xw0A0A.G0UonZCOXkHbgJS1N0GrbmSzkA4",
-    "mongodbPassword": "IHNxy9ZrebGz0zy3",
+    "clientID": "732398026878091284",
+    "mongodbPassword": "mlvqFRBXNdXyM3Xb",
     "mongodbUser": "danny",
     "database": "production",
-    "clientID": "732398026878091284",
     // dev mode
     "devToken": "NzQwNzU4MDIzNDc5NDkyNjE5.Xytqqw.wq6B2XwmULf25wuze7xD4i24UYU",
-    "devMongodbPassword": "3fQfkk4pLwKSL2yS",
+    "devClientID": "740758023479492619",
+    "devMongodbPassword": "4xaEz0ZhgHdG9neS",
     "devMongodbUser": "UserTest",
     "devDatabase": "test",
-    "devClientID": "740758023479492619",
     //any mode
     "prefix": "ki!"
 }
