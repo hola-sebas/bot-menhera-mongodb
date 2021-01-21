@@ -1,6 +1,6 @@
 var comienzo = Date.now();
 console.clear();
-console.info(`Iniciando... \nen modo: ${process.env.NODE_ENV? process.env.NODE_ENV: "development"}`);
+console.info(`Iniciando... \nen modo: ${process.env.NODE_ENV ? process.env.NODE_ENV : "development"}`);
 import Discord from "discord.js";
 import config from "./config";
 import connectDatabase from "./database";
@@ -24,7 +24,7 @@ try {
   commands.run(client);
   events.run(client);
 } catch (err) {
-  console.error(`ERROR exit code 3: Se produjo un error inesperado mientras se cargaba el bot: \n`,  err);
+  console.error(`ERROR exit code 3: Se produjo un error inesperado mientras se cargaba el bot: \n`, err);
   process.exit(3);
 }
 //Fin de la ejecucion de scripts
