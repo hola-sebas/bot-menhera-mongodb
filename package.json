@@ -4,7 +4,7 @@
   "description": "Discord bot",
   "main": "./dist/index.js",
   "scripts": {
-    "prestart": "tsc",
+    "postinstall": "tsc",
     "start": "cd dist && node index.js",
     "dev": "nodemon"
   },
