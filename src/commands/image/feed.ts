@@ -1,8 +1,7 @@
 import Discord, { Message } from "discord.js";
 import IClient from "../../@types/discord-client";
-import gif from 'tnai';
+import tnai from "../../tnai-client";
 import { permissions } from "../../@types/bot-commands";
-const tnai = new gif();
 
 export default new class command_feed {
     name = 'feed';

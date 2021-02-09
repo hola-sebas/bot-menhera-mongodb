@@ -1,7 +1,6 @@
 import Discord, { Message } from 'discord.js';
 import { bot_commands, permissions } from '../../@types/bot-commands';
-import gif from 'tnai';
-const tnai = new gif();
+import tnai from "../../tnai-client";
 
 export default new class command_angry implements bot_commands {
     name = 'angry';
