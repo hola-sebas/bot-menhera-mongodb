@@ -1,0 +1,21 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "postinstall",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": [],
+			"label": "npm: postinstall",
+			"detail": "tsc"
+		},
+		{
+			"type": "shell",
+			"label": "shell: delete build",
+			"command": "rm -r ${workspaceFolder}/dist"
+		}
+	]
+}
