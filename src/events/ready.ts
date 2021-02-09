@@ -5,7 +5,7 @@ var ev = new class event_ready {
   name = 'ready';
   run = async (client: IClient) => {
     if (!client.user) {
-      console.error("el usuario es indefinido!");
+      console.error("The bot user is undefined!");
       process.exit();
     }
 
@@ -16,7 +16,7 @@ var ev = new class event_ready {
         status: "online"
       });
       statesCount++;
-      if(statesCount >= states.length) statesCount = 0;
+      if (statesCount >= states.length) statesCount = 0;
 
     }, 15000);
     var statesCount = 0;
@@ -39,10 +39,10 @@ var ev = new class event_ready {
         type: "WATCHING"
       },
 
-    ]
-    console.log(`El bot ${client.user.username} esta listo!`);
-  }
-}
+    ];
+    console.log(`The bot ${client.user.username} is ready!`);
+  };
+};
 
 
 export default ev;

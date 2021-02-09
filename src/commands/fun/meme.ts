@@ -12,25 +12,24 @@ export default new class command_meme implements bot_commands {
     disable = true;
 
     execute = function (message: Message, args: string[]): void {
-        message.channel.startTyping()
-        let memes = ["MemesESP", "spanishmemes", "SpanishMeme", "mexico", "MemesEnEspanol"]
-        let random = Math.round(Math.random() * memes.length)
+        message.channel.startTyping();
+        let memes = ["MemesESP", "spanishmemes", "SpanishMeme", "mexico", "MemesEnEspanol"];
+        let random = Math.round(Math.random() * memes.length);
         meme(memes[random], function (err: Error, data: { title: any; url: any; }) {
             if (err) {
-                console.error(err)
                 message.channel.send('Momento sad\nHubo un error al tratar de buscar memes, intentalo de nuevo ')
-                    .then(m => m.delete({ timeout: 10000 }))
-                message.channel.stopTyping()
-                return
+                    .then(m => m.delete({ timeout: 10000 }));
+                message.channel.stopTyping();
+                return;
             }
             message.channel.send(`${data.title}\n${data.url}`)
                 .catch(err => {
                     message.channel.send('Momento sad\nHubo un error al tratar de buscar memes, intentalo de nuevo ')
-                        .then(m => m.delete({ timeout: 10000 }))
-                    message.channel.stopTyping()
-                    return
-                })
-        })
-        message.channel.stopTyping()
-    }
-}
+                        .then(m => m.delete({ timeout: 10000 }));
+                    message.channel.stopTyping();
+                    return;
+                });
+        });
+        message.channel.stopTyping();
+    };
+};

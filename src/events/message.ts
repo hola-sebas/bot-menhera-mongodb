@@ -1,5 +1,4 @@
 import sh from 'chalk';
-import readline from 'readline';
 import Discord, { Message } from 'discord.js';
 
 import userDB from '../models/user';
@@ -23,11 +22,11 @@ export default new class event_message {
         if (!message.guild || message.author.bot) return;
         if (!message.guild.me?.permissionsIn(message.channel).has('SEND_MESSAGES')) {
             if (message.member?.permissions.has('ADMINISTRATOR')) {
-                message.author.send('Para poder usarme en ese canal debes darme permisos de enviar mensajes').catch(err => err)
+                message.author.send('Para poder usarme en ese canal debes darme permisos de enviar mensajes').catch(err => err);
                 return;
             }
         }
-        let prefix = configJSON.prefix
+        let prefix = configJSON.prefix;
 
         //ejecucion de modulos
         await module_GuildDB(message, client);
@@ -40,11 +39,11 @@ export default new class event_message {
         //fin de ejecucion de modulos
 
         // verificar el registro de la base de datos
-        let usuario = await userDB.findOne({ userId: message.author.id })
-        if (!usuario) return
-        let configuracion = await guild.findOne({ guildId: message.guild.id })
-        if (!configuracion) return
-        prefix = configuracion.configuracion.prefix
+        let usuario = await userDB.findOne({ userId: message.author.id });
+        if (!usuario) return;
+        let configuracion = await guild.findOne({ guildId: message.guild.id });
+        if (!configuracion) return;
+        prefix = configuracion.configuracion.prefix;
 
         if (!message.content.startsWith(prefix)) return;
         // fin de la verificacion
@@ -54,8 +53,8 @@ export default new class event_message {
             const embedPrefix = new Discord.MessageEmbed()
                 .setDescription(`Veo que no pusiste ningun comando, puedes empezar con ${prefix}help`)
                 .setColor(0xf1c40f);
-            message.channel.send(embedPrefix).catch(err => err)
-            return
+            message.channel.send(embedPrefix).catch(err => err);
+            return;
         }
         // fin solo prefix
 
@@ -63,8 +62,8 @@ export default new class event_message {
         const args = message.content.slice(prefix.length).trim().split(" ");
         const commandName = args.shift()?.toLowerCase() || "";
 
-        let disabled_commands = configuracion.configuracion.comandosDesactivados
-        let disabled_categories = configuracion.configuracion.categoriasDesactivadas
+        let disabled_commands = configuracion.configuracion.comandosDesactivados;
+        let disabled_categories = configuracion.configuracion.categoriasDesactivadas;
 
         const command = client.commands.get(commandName)
             || client.commands.find((cmd) => cmd.aliases?.includes(commandName) || false);
@@ -81,8 +80,8 @@ export default new class event_message {
         }
 
         if (!message.guild.me?.permissionsIn(message.channel).has(command.permissions)) {
-            message.channel.send(`No tengo los permisos necesarios para ejecutar ese comando, los permisos son: \n\`${command.permissions.join(', ')}\``)
-            return
+            message.channel.send(`No tengo los permisos necesarios para ejecutar ese comando, los permisos son: \n\`${command.permissions.join(', ')}\``);
+            return;
         }
         //fin manejo de comandos
 
@@ -93,20 +92,20 @@ export default new class event_message {
             let cooling = cooldowns.get(message.author.id)?.get(command.name);
             if (!cooling) return;
             var timeLeft = now.getDate() - cooling.getDate() / 10000;
-            let tiempo = 'segundos';
+            let timeName = 'segundos';
             if (timeLeft > 60) {
-                timeLeft = timeLeft / 60
-                tiempo = 'minutos'
+                timeLeft = timeLeft / 60;
+                timeName = 'minutos';
                 if (timeLeft > 60) {
-                    timeLeft = timeLeft / 60
-                    tiempo = 'horas'
+                    timeLeft = timeLeft / 60;
+                    timeName = 'horas';
                     if (timeLeft > 60) {
-                        timeLeft = timeLeft / 24
-                        tiempo = 'dias'
+                        timeLeft = timeLeft / 24;
+                        timeName = 'dias';
                     }
                 }
             }
-            message.channel.send(`Por favor espera ${timeLeft.toFixed(1)} ${tiempo} para volver a ejecutar el comando ${command.name}`);
+            message.channel.send(`Por favor espera ${timeLeft.toFixed(1)} ${timeName} para volver a ejecutar el comando ${command.name}`);
             return;
         };
 
@@ -121,26 +120,18 @@ export default new class event_message {
             let user = cooldowns.get(message.author.id);
             user?.delete(command.name);
             if (!user?.size) cooldowns.delete(message.author.id);
-        }, command.cooldown || 5000);
-
+        }, (command.cooldown || 5) * 1000);
         //Fin de coodowns
 
         //ejecucion de comandos
         try {
+            if (process.env.NODE_ENV != "production")
+                console.log(sh.yellow(`Ejecutando el comando ${command.name} en ${message.guild.name}`));
 
-            readline.cursorTo(process.stdout, 0);
-            process.stdout.write(sh.yellow(`Ejecutando el comando ${command.name} en ${message.guild.name}\n`));
             await command.execute(message, args, client, prefix);
-
-            setTimeout(() => {
-                process.stdout.write("->")
-            }, 50)
-
         } catch (err) {
 
-            readline.cursorTo(process.stdout, 0);
-            console.error("Hubo un error durante la ejecucion el error se mostrará a continuación: \n", err);
-            process.stdout.write('->')
+            console.error("There was an error during the command execution the error will be shown below: \n", err);
 
             var sad = [
                 "https://gluc.mx/u/fotografias/m/2019/12/30/f608x342-21614_51337_0.png",
@@ -148,7 +139,7 @@ export default new class event_message {
                 "https://media1.tenor.com/images/0b796a2198f36cdb21c4357592a10ecf/tenor.gif?itemid=12913371",
                 "https://i.pinimg.com/originals/73/b1/3b/73b13bcd2590cd93ca1ca9bbc7f917be.gif",
                 "https://64.media.tumblr.com/0e42f221a783ae10e79fd8c710b59898/tumblr_o1usx7DyI91s7fey2o1_500.gif"
-            ]
+            ];
             const embed_error = new Discord.MessageEmbed()
                 .setTitle("oh no! D:")
                 .setImage(sad[(Math.floor(Math.random() * sad.length))])
@@ -161,5 +152,5 @@ export default new class event_message {
         }
         //fin de ejecucion de comandos
 
-    }
-}
+    };
+};

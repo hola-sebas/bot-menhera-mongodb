@@ -16,7 +16,7 @@ export default new class commands_init {
         imageInit(client);
         moderacionInit(client);
         utilityInit(client);
-        console.log(`cargados ${client.commands.size} comandos...`);
+        console.log(`Loaded ${client.commands.size} commands...`);
         return true;
-    }
-}
+    };
+};

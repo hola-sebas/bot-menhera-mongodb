@@ -1,11 +1,11 @@
-import { Message, Guild } from 'discord.js'
-import IClient from '../@types/discord-client'
-import configFile from '../config'
-import guild from '../models/guild'
+import { Message, Guild } from 'discord.js';
+import IClient from '../@types/discord-client';
+import configFile from '../config';
+import guild from '../models/guild';
 
-export default async function (message: Message | { guild: Guild }, client: IClient): Promise<void> {
+export default async function (message: Message | { guild: Guild; }, client: IClient): Promise<void> {
     //iniciar servidor en la base de datos 
-    let config = await guild.findOne({ guildId: message.guild?.id })
+    let config = await guild.findOne({ guildId: message.guild?.id });
     if (config) return;
     const newGuild = new guild({
         guildId: message.guild?.id,
@@ -26,7 +26,7 @@ export default async function (message: Message | { guild: Guild }, client: ICli
                 channel: '0'
             }
         }
-    })
+    });
     await newGuild.save();
     return;
 }

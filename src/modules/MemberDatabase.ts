@@ -1,9 +1,6 @@
-// DONE
-
-import { Message } from 'discord.js'
-import IClient from '../@types/discord-client'
-import user from '../models/user'
-
+import { Message } from 'discord.js';
+import IClient from '../@types/discord-client';
+import user from '../models/user';
 
 /**
  * creates a member in the database if they not exists
@@ -42,5 +39,5 @@ export default async function (message: Message, client: IClient): Promise<void>
         }
     });
     await newUser.save();
-    return ;
+    return;
 }
