@@ -1,6 +1,6 @@
-var comienzo = Date.now();
+console.time("init time");
 console.clear();
-console.info(`Iniciando... \nen modo: ${process.env.NODE_ENV ? process.env.NODE_ENV : "development"}`);
+console.info(`Starting...\nMode: ${process.env.NODE_ENV ? process.env.NODE_ENV : "development"}`);
 import Discord from "discord.js";
 import config from "./config";
 import connectDatabase from "./database";
@@ -18,26 +18,26 @@ client.console = new Discord.Collection();
 
 
 //Ejecucion de scripts
-console.log("Ejecutando scripts\n");
+console.log("Executing scripts");
 try {
   utils.run();
   commands.run(client);
   events.run(client);
 } catch (err) {
-  console.error(`ERROR exit code 3: Se produjo un error inesperado mientras se cargaba el bot: \n`, err);
+  console.error(`ERROR exit code 3: Someting worng while starting bot: \n`, err);
   process.exit(3);
 }
-//Fin de la ejecucion de scripts
+//Fin de la ejecucion de scripts 
 
 connectDatabase(() => {
-  var fin = Date.now();
+  console.timeEnd("init time");
 
-  console.log(`Cargado en ${fin - comienzo} ms\niniciando sesion en discord\n`);
+  console.log(`Logging in`);
 
-  client.login(process.env.NODE_ENV == "production" ? config.token : config.devToken).then(() => {
-    console.log("Sesion iniciada correctamente en discord")
+  client.login(config.token).then(() => {
+    console.log("Session successfully started on discord");
   }).catch((err) => {
-    console.error(`ERROR exit code 1: El token provicionado es invalido\nToken: ${config.token}\n\n${err}`);
+    console.error(`ERROR exit code 1: an error occurred with the login\nToken: ${config.token}`, err);
     process.exit(1);
   });
 });
