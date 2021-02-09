@@ -43,7 +43,6 @@ export default new class command_bugreport implements bot_commands {
         } catch (err) {
             message.channel.send('Lo siento hubo un error al reportar el bug :(')
             console.log('\n', err);
-            process.stdout.write('->')
         }
     }
 }
