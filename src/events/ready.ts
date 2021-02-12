@@ -1,9 +1,9 @@
 import IClient from "../@types/discord-client";
 import { PresenceData } from "discord.js";
 
-var ev = new class event_ready {
+export default new class event_ready {
   name = 'ready';
-  run = async (client: IClient) => {
+  async run(client: IClient) {
     if (!client.user) {
       console.error("The bot user is undefined!");
       process.exit();
@@ -16,14 +16,14 @@ var ev = new class event_ready {
         status: "online"
       });
       statesCount++;
-      if (statesCount >= states.length) statesCount = 0;
+      if (statesCount > states.length) statesCount = 0;
 
-    }, 15000);
+    }, 20000);
     var statesCount = 0;
     var states: PresenceData["activity"][] = [
       {
         name: "nueva pagina :D",
-        type: "WATCHING",
+        type: "STREAMING",
         url: "https://menherachan.herokuapp.com",
       },
       {
@@ -37,12 +37,8 @@ var ev = new class event_ready {
       {
         name: `${client.channels.cache.size} Canales`,
         type: "WATCHING"
-      },
-
+      }
     ];
     console.log(`The bot ${client.user.username} is ready!`);
   };
 };
-
-
-export default ev;

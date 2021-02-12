@@ -10,7 +10,7 @@ const guildSchema = new Schema({
         type: Array,
         required: true
     }
-})
+});
 
-export default model<ICommands>('commands', guildSchema)
+export default model<ICommands>('commands', guildSchema);
 

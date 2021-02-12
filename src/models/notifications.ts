@@ -14,6 +14,6 @@ const notificationsSchema = new Schema({
         type: Date,
         default: new Date(Date.now())
     }
-})
+});
 
-export default model<INotifications>('notifications', notificationsSchema)
+export default model<INotifications>('notifications', notificationsSchema);

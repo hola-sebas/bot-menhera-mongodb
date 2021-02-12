@@ -6,18 +6,18 @@ export default interface guild_model extends Document {
     configuracion: {
         prefix: string,
         comandosDesactivados: Array<string>,
-        categoriasDesactivadas: Array<string>
+        categoriasDesactivadas: Array<string>;
     };
     mensajes: {
         autoReply: boolean,
         welcome: {
             img: string,
             message: string,
-            channel: string
+            channel: string;
         },
         goodbye: {
             message: string,
-            channel: string
-        }
-    }
+            channel: string;
+        };
+    };
 }

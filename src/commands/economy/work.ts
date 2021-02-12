@@ -12,14 +12,14 @@ export default new class command_work implements bot_commands {
     disable = true;
     cooldown = 10;
     execute = async (message: Message, args: string[]) => {
-        const config = await user.findOne({ userId: message.author.id })
+        const config = await user.findOne({ userId: message.author.id });
         if (!config) return;
-        let moneyGanada = Math.round(Math.random() * 20)
-        config.money.efectivo += moneyGanada
+        let moneyGanada = Math.round(Math.random() * 20);
+        config.money.efectivo += moneyGanada;
         const embed = new Discord.MessageEmbed()
             .setColor('RANDOM')
             .setDescription(`${categoryOptions.trabajos[(Math.floor(Math.random() * categoryOptions.trabajos.length))]}, ganaste ${moneyGanada}\$`);
         message.channel.send(embed);
         config.save();
-    }
-}
+    };
+};

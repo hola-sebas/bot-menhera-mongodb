@@ -2,6 +2,10 @@ import Discord from 'discord.js';
 import os from "os";
 import { bot_commands, permissions } from "../../@types/bot-commands";
 import IClient from "../../@types/discord-client";
+
+import moment from "moment";
+import "moment-duration-format";
+
 var version = require('../../../package.json');
 
 export default new class command_stats implements bot_commands {
@@ -17,10 +21,8 @@ export default new class command_stats implements bot_commands {
             message.channel.send("hmm hay algo raro por aqui, no logro encontrar mi dueño T-T");
             return;
         };
-        const moment = require("moment");
-        require('moment-duration-format');
 
-        const actividad = moment.duration(client.uptime).format(" D [dias], H [hrs], m [mins], s [secs]");
+        const actividad = moment.duration(client.uptime).format("D [dias], H [hrs], m [mins], s [secs]");
         const embed = new Discord.MessageEmbed()
             .setColor('RANDOM')
             .setThumbnail(client.user.displayAvatarURL({ size: 1024, dynamic: true }))
@@ -38,5 +40,5 @@ export default new class command_stats implements bot_commands {
 
         message.channel.send(embed);
         return;
-    }
-}
+    };
+};

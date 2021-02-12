@@ -34,21 +34,21 @@ export default new class command_mine implements bot_commands {
         });
 
         if (index != -1) {
-            config.inventory.bag.splice(index, 1, { item: `${categoryOptions.minerales[minRandom]}`, cantidad: si + random })
-            let p = config.money.efectivo
-            let money = Math.round(Math.random() * (21 - 5) + 5)
-            config.money.efectivo = p + money
-            embed.setDescription(`• **Minerales**: ${categoryOptions.minerales[minRandom]} (x${random})\n• **Coins**: ${money}`)
-            message.channel.send(embed)
+            config.inventory.bag.splice(index, 1, { item: `${categoryOptions.minerales[minRandom]}`, cantidad: si + random });
+            let p = config.money.efectivo;
+            let money = Math.round(Math.random() * (21 - 5) + 5);
+            config.money.efectivo = p + money;
+            embed.setDescription(`• **Minerales**: ${categoryOptions.minerales[minRandom]} (x${random})\n• **Coins**: ${money}`);
+            message.channel.send(embed);
 
         } else {
-            config.inventory.bag.push({ item: categoryOptions.minerales[minRandom], cantidad: random })
-            let x = config.money.efectivo
-            let money = Math.round(Math.random() * (21 - 5) + 5)
+            config.inventory.bag.push({ item: categoryOptions.minerales[minRandom], cantidad: random });
+            let x = config.money.efectivo;
+            let money = Math.round(Math.random() * (21 - 5) + 5);
             config.money.efectivo = x + money;
-            embed.setDescription(`• **Minerales** ${categoryOptions.minerales[minRandom]} (x${random})\n• **Coins** ${money}`)
-            message.channel.send(embed)
+            embed.setDescription(`• **Minerales** ${categoryOptions.minerales[minRandom]} (x${random})\n• **Coins** ${money}`);
+            message.channel.send(embed);
         }
-        config.save()
-    }
-}
+        config.save();
+    };
+};

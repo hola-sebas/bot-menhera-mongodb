@@ -2,7 +2,7 @@ import { Message } from "discord.js";
 import IClient from "../../../@types/discord-client";
 import user from "../../../models/user";
 
-export default async function buy(message:Message, args: string[], client: IClient) {
+export default async function buy(message: Message, args: string[], client: IClient) {
     const buyUsuMencion = message.mentions.users.first();
     if (!buyUsuMencion) {
         message.channel.send('Debes mencionar a un usuario para comprarle');
@@ -39,10 +39,10 @@ export default async function buy(message:Message, args: string[], client: IClie
         if (item.item == buyProductoAComprar) return item;
     }).filter(Boolean)[0];
 
-    if(!buyProducto) return;
+    if (!buyProducto) return;
 
     const buyDbAuthor = await user.findOne({ userId: message.author.id });
-    if(!buyDbAuthor) return;
+    if (!buyDbAuthor) return;
     let buyMoneyAuthor = buyDbAuthor.money.efectivo;
     if (buyProducto.price > buyMoneyAuthor) {
         message.channel.send('No tienes el dinero en efectivo suficiente para comprar ese producto');
@@ -55,7 +55,7 @@ export default async function buy(message:Message, args: string[], client: IClie
     let buyBagItemAuthor = buyDbAuthor.inventory.bag.map(item => {
         if (item.item == buyProductoAComprar) return item;
     }).filter(Boolean)[0];
-    if(!buyBagItemAuthor) return;
+    if (!buyBagItemAuthor) return;
     if (buyIndexBagAuthor == -1) {
         buyDbAuthor.inventory.bag.push({ item: buyProductoAComprar, cantidad: 1 });
     } else {

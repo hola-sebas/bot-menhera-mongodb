@@ -13,7 +13,7 @@ export default new class command_bag implements bot_commands {
 
     execute = async function (message: Discord.Message, args: string[]): Promise<void> {
         let config = await user.findOne({ userId: message.author.id });
-        if(!config) return;
+        if (!config) return;
         let bag = config.inventory.bag;
 
         const embedBag = new Discord.MessageEmbed()
@@ -22,13 +22,13 @@ export default new class command_bag implements bot_commands {
             .setThumbnail(`https://pbs.twimg.com/media/DfH9bqqV4AAJkc5.jpg`)
             .setDescription('');
         if (!bag.length) {
-            embedBag.setDescription('No hay objetos en tu mochila u.u')
+            embedBag.setDescription('No hay objetos en tu mochila u.u');
         } else {
             embedBag.addField('Lista de items', bag.map(item => {
-                return `• ${item.item} (x${item.cantidad})`
+                return `• ${item.item} (x${item.cantidad})`;
             }));
         };
         message.channel.send(embedBag);
         return;
-    }
-}
+    };
+};

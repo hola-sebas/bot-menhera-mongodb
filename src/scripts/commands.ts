@@ -6,6 +6,7 @@ import { init as funInit } from "../commands/fun/index";
 import { init as imageInit } from "../commands/image/index";
 import { init as moderacionInit } from "../commands/moderacion/index";
 import { init as utilityInit } from "../commands/utility/index";
+import { init as musicInit } from "../commands/music/index";
 
 export default new class commands_init {
     run = (client: IClient) => {
@@ -16,6 +17,7 @@ export default new class commands_init {
         imageInit(client);
         moderacionInit(client);
         utilityInit(client);
+        musicInit(client);
         console.log(`Loaded ${client.commands.size} commands...`);
         return true;
     };

@@ -14,9 +14,9 @@ export default new class command_deposit implements bot_commands {
             message.channel.send('Debes poner una cantidad a depositar o all para depositar todo');
             return;
         }
-        const config = await user.findOne({ userId: message.author.id })
+        const config = await user.findOne({ userId: message.author.id });
         if (!config) return;
-        let efectivo = config.money.efectivo
+        let efectivo = config.money.efectivo;
         if (efectivo == 0) {
             message.channel.send('No tienes efectivo para depositar');
             return;
@@ -28,7 +28,7 @@ export default new class command_deposit implements bot_commands {
             message.channel.send(`Depositaste todos tus fondos a el banco ahora tienes ${dineroActualizado}\$ en tu banco`);
             return;
         }
-        let dineroADepositar = parseInt(args[0])
+        let dineroADepositar = parseInt(args[0]);
         if (isNaN(dineroADepositar)) {
             message.channel.send('Debes colocar un numero');
             return;
@@ -41,5 +41,5 @@ export default new class command_deposit implements bot_commands {
         config.money.bank += dineroADepositar;
         config.save();
         message.channel.send(`Depositaste ${dineroADepositar}\$ a tu banco`);
-    }
-}
+    };
+};

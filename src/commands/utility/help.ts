@@ -8,13 +8,13 @@ export default new class command_help implements bot_commands {
     name = 'help';
     description = 'Para obtener ayuda sobre los comandos';
     usage = 'help';
-    aliases = ['he', 'lp'];
+    aliases = ["ayuda"];
     permissions: permissions[] = ['SEND_MESSAGES', 'VIEW_CHANNEL', 'EMBED_LINKS'];
     category = __dirname.split(require('path').sep).pop();
     disable = false;
 
     execute = async (message: Message, args: string[], client: IClient, prefix: string) => {
-        const carpetas = client.categoria;
+        const carpetas = client.categories;
         let argumentos = args[0] ? args[0].toLowerCase() : "______";
 
         const command = client.commands.get(argumentos)
@@ -24,19 +24,18 @@ export default new class command_help implements bot_commands {
             var stringcategories: string = "";
             carpetas.forEach((category, key) => {
                 stringcategories = `${stringcategories}\n\`${prefix}help ${key}\` ║ ${category.description}`;
-            })
+            });
             const embed = new discord.MessageEmbed()
                 .setTitle(`Comados de ${client.user.username}`)
                 .setDescription(`Ahora mismo hay \`${carpetas.size}\` categorias y \`${client.commands.size.toString()}\` comandos para ti\n`)
                 .setColor('RANDOM')
                 .addField('• Categorias', stringcategories)
-                .addField('• Enlaces útiles:', ['[Donaciones](https://ko-fi.com/bototaku) ',
-                    '║ [Nueva! Dashboard](https://menherachan.herokuapp.com) ',
-                    '║ [Soporte](https://discord.gg/KxNHeaz) ',
-                    '║ [Invitame](https://discord.com/oauth2/authorize?client_id=732398026878091284&scope=bot&permissions=8) ',
-                    '║ [Repositorio](https://github.com/hola-sebas/bot-menhera)'].join(""))
+                .addField('• Enlaces útiles:', ['[Donaciones](https://ko-fi.com/dannypalma) ',
+                    '║ [Nueva! Dashboard](https://menherachan.herokuapp.com)',
+                    '║ [Soporte](https://discord.gg/S8NJ7j7VvA)',
+                    '║ [Invitame](https://discord.com/oauth2/authorize?client_id=732398026878091284&scope=bot&permissions=8)'].join(""))
                 .setFooter(`${client.user.username} version ${version.version}`, client.user.displayAvatarURL())
-                .setThumbnail('https://cdn.discordapp.com/attachments/736287295522603098/742490666692509776/274-2748314_freetoedit-menherachan-animegirl-animecute-png-kawaii-anime-girl.png')
+                .setThumbnail('https://cdn.discordapp.com/attachments/736287295522603098/742490666692509776/274-2748314_freetoedit-menherachan-animegirl-animecute-png-kawaii-anime-girl.png');
             let notificacion = (await notificationsdb.find())[0];
             if (notificacion) {
                 embed.addField(notificacion.title, `${notificacion.notification_body}\n\n\`${notificacion.date.toUTCString()}\``);
@@ -70,7 +69,7 @@ export default new class command_help implements bot_commands {
                 .addField(`• Descripcion: `, command.description)
                 .addField(`• Uso: `, `\`\`\`md\n${prefix}${command.usage}\`\`\``)
                 .setColor('RANDOM')
-                .setFooter(`Consultado por: ${message.author.username} • Syntaxis: <requerido> (opcional) a / b`, message.author.displayAvatarURL())
+                .setFooter(`Consultado por: ${message.author.username} • Syntaxis: <requerido> (opcional) a | b`, message.author.displayAvatarURL())
                 .setThumbnail('https://cdn.discordapp.com/attachments/736287295522603098/742490666692509776/274-2748314_freetoedit-menherachan-animegirl-animecute-png-kawaii-anime-girl.png');
 
             if (command.aliases) {
@@ -81,5 +80,5 @@ export default new class command_help implements bot_commands {
             comando.addField(`• Permisos: `, `\`\`\`${command.permissions.join(', ')}\`\`\``);
             message.channel.send(comando);
         }
-    }
-}
+    };
+};

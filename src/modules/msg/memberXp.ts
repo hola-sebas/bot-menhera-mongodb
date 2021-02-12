@@ -21,10 +21,10 @@ export default new class module_memberXP {
             let color = config.xp.color;
             let url = config.xp.url;
             message.channel.startTyping();
-            let img = await render.run(message.author, color, level, curXp, needXP, url).catch(err => err);
+            let img = await render.run(message.author, color, level.toString(), curXp, needXP, url).catch(err => err);
             message.reply(`Has subido de nivel`, { files: [img] }).then(m => m.delete({ timeout: 10000 })).catch(err => err);
             message.channel.stopTyping();
         };
         await config.save();
-    }
-}
+    };
+};

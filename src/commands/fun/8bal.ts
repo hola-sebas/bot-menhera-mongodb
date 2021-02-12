@@ -13,9 +13,9 @@ export default new class command_8ball implements bot_commands {
             message.channel.send('Debes poner una pregunta');
             return;
         }
-        let YesorNot: number | string = Math.round(Math.random() * 1)
+        let YesorNot: number | string = Math.round(Math.random() * 1);
         if (!YesorNot) {
-            YesorNot = 'no'
+            YesorNot = 'no';
         } else
             YesorNot = 'si';
         const embed = new Discord.MessageEmbed()
@@ -24,5 +24,5 @@ export default new class command_8ball implements bot_commands {
             .addField('Mi respuesta: ', YesorNot)
             .setFooter(`Convocado por ${message.author.tag}`, message.author.displayAvatarURL());
         message.channel.send(embed);
-    }
-}
+    };
+};

@@ -13,7 +13,7 @@ import module_memberXP from "../modules/msg/memberXp";
 import module_mencion from "../modules/msg/mencion";
 
 
-const cooldowns = new Discord.Collection<string, Map<string, Date>>();
+const cooldowns = new Discord.Collection<string, Discord.Collection<string, Date>>();
 
 
 export default new class event_message {
@@ -78,49 +78,52 @@ export default new class event_message {
             if (process.env.NODE_ENV != "production") message.channel.send(`El comando ${command.name} esta desactivado`);
             return;
         }
-
         if (!message.guild.me?.permissionsIn(message.channel).has(command.permissions)) {
-            message.channel.send(`No tengo los permisos necesarios para ejecutar ese comando, los permisos son: \n\`${command.permissions.join(', ')}\``);
+            message.channel.send(`No tengo los permisos necesarios para ejecutar ese comando, los permisos son: \n\`${command.permissions.join(', ')}\``)
+                .catch(() => void 0);
             return;
+        }
+        if (!message.member?.hasPermission(command.authorPermissions || [])) {
+            message.channel.send(`lo siento pero no tienes los permisos necesarios, los permisos son: \n \`${command.authorPermissions?.join(", ")}\``);
         }
         //fin manejo de comandos
 
         //Cooldowns
 
+        if (!cooldowns.has(command.name)) {
+            cooldowns.set(command.name, new Discord.Collection());
+        }
+
         var now: Date = new Date();
-        if (cooldowns.get(message.author.id)?.has(command.name)) {
-            let cooling = cooldowns.get(message.author.id)?.get(command.name);
-            if (!cooling) return;
-            var timeLeft = now.getDate() - cooling.getDate() / 10000;
-            let timeName = 'segundos';
-            if (timeLeft > 60) {
-                timeLeft = timeLeft / 60;
-                timeName = 'minutos';
+        var timestamps = cooldowns.get(command.name);
+        var cooldownAmount = (command.cooldown || 5) * 1000;
+
+        if (timestamps?.has(message.author.id)) {
+
+            var expirationTime = (timestamps.get(message.author.id)?.getTime() || 5) + cooldownAmount;
+            if (now.getTime() < expirationTime) {
+                var timeLeft = (expirationTime - now.getTime()) / 1000;
+                let timeName = 'segundos';
                 if (timeLeft > 60) {
                     timeLeft = timeLeft / 60;
-                    timeName = 'horas';
+                    timeName = 'minutos';
                     if (timeLeft > 60) {
-                        timeLeft = timeLeft / 24;
-                        timeName = 'dias';
+                        timeLeft = timeLeft / 60;
+                        timeName = 'horas';
+                        if (timeLeft > 60) {
+                            timeLeft = timeLeft / 24;
+                            timeName = 'dias';
+                        }
                     }
                 }
+                message.channel.send(`Por favor espera ${timeLeft.toFixed(1)} ${timeName} para volver a ejecutar el comando ${command.name}`);
             }
-            message.channel.send(`Por favor espera ${timeLeft.toFixed(1)} ${timeName} para volver a ejecutar el comando ${command.name}`);
             return;
         };
-
-        var user = cooldowns.get(message.author.id);
-        if (!user) {
-            cooldowns.set(message.author.id, new Map().set(command.name, new Date()));
-        } else {
-            user.set(command.name, new Date());
-        };
-
+        timestamps?.set(message.author.id, now);
         setTimeout(() => {
-            let user = cooldowns.get(message.author.id);
-            user?.delete(command.name);
-            if (!user?.size) cooldowns.delete(message.author.id);
-        }, (command.cooldown || 5) * 1000);
+            timestamps?.delete(message.author.id);
+        }, cooldownAmount);
         //Fin de coodowns
 
         //ejecucion de comandos

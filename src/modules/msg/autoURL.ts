@@ -21,15 +21,15 @@ export default new class module_autoURL {
         });
 
         if (obtenido.status != 200) return;
-        let msgObtenido = await obtenido.json()
-        msg.delete().catch(err => err)
+        let msgObtenido = await obtenido.json();
+        msg.delete().catch(err => err);
         if (msgObtenido.content.length && msgObtenido.embeds.length) {
             let embed: any;
             msgObtenido.embeds.map((mapEmbed: any) => {
-                embed = new Discord.MessageEmbed(mapEmbed)
-            })
-            msg.channel.send(msgObtenido.content, embed)
-            return
+                embed = new Discord.MessageEmbed(mapEmbed);
+            });
+            msg.channel.send(msgObtenido.content, embed);
+            return;
 
         } else if (msgObtenido.content.length) {
             const embedLink = new Discord.MessageEmbed()
@@ -37,17 +37,17 @@ export default new class module_autoURL {
                 .setDescription(msgObtenido.content)
                 .setColor("RANDOM")
                 .addField("Jump", `[Jump to message](https://discord.com/channels/${idServer}/${idCanal}/${idMsg.slice(0, 18)})`, true)
-                .addField("Channel", `<#${msgObtenido.channel_id}>`, true)
-            msg.channel.send(embedLink)
-            return
+                .addField("Channel", `<#${msgObtenido.channel_id}>`, true);
+            msg.channel.send(embedLink);
+            return;
 
         } else if (msgObtenido.embeds.length) {
-            let titulo = (`**Mensaje por:** ${msgObtenido.author.username} \n**En:** <#${msgObtenido.channel_id}> • At: ${msgObtenido.timestamp.replace(/-/g, "/").slice(0, 10)}`)
+            let titulo = (`**Mensaje por:** ${msgObtenido.author.username} \n**En:** <#${msgObtenido.channel_id}> • At: ${msgObtenido.timestamp.replace(/-/g, "/").slice(0, 10)}`);
             msgObtenido.embeds.map((mapEmbed: any) => {
-                const embed = new Discord.MessageEmbed(mapEmbed)
-                msg.channel.send(titulo, embed)
-            })
-            return
+                const embed = new Discord.MessageEmbed(mapEmbed);
+                msg.channel.send(titulo, embed);
+            });
+            return;
 
         } else if (msgObtenido.attachments.length) {
 
@@ -55,14 +55,14 @@ export default new class module_autoURL {
                 .setAuthor(`${msgObtenido.author.username} • ${msgObtenido.timestamp.replace(/-/g, "/").slice(0, 10)}`, `https://cdn.discordapp.com/avatars/${msgObtenido.author.id}/${msgObtenido.author.avatar}.png`)
                 .setColor("RANDOM")
                 .addField("Jump", `[Jump to message](https://discord.com/channels/${idServer}/${idCanal}/${idMsg.slice(0, 18)})`, true)
-                .addField("Channel", `<#${msgObtenido.channel_id}>`, true)
+                .addField("Channel", `<#${msgObtenido.channel_id}>`, true);
             msgObtenido.attachments.map((mapAtt: any) => {
-                const att = new Discord.MessageAttachment(mapAtt.url, mapAtt.filename)
-                embedAtt.attachFiles([att])
-                embedAtt.setImage(`attachment://${mapAtt.filename}`)
-            })
-            msg.channel.send(embedAtt)
-            return
+                const att = new Discord.MessageAttachment(mapAtt.url, mapAtt.filename);
+                embedAtt.attachFiles([att]);
+                embedAtt.setImage(`attachment://${mapAtt.filename}`);
+            });
+            msg.channel.send(embedAtt);
+            return;
         }
-    }
-}
+    };
+};

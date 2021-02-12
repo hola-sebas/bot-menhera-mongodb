@@ -15,21 +15,21 @@ export default new class command_withdraw implements bot_commands {
             message.channel.send('Debes colocar un numero o all');
             return;
         }
-        const config = await user.findOne({ userId: message.author.id })
+        const config = await user.findOne({ userId: message.author.id });
         if (!config) return;
-        let moneyBanco = config.money.bank
+        let moneyBanco = config.money.bank;
         if (moneyBanco == 0) {
             message.channel.send('No tienes dinero en el banco');
             return;
         }
         if (args[0] == 'all') {
-            config.money.bank = 0
-            config.money.efectivo += moneyBanco
-            config.save()
-            message.channel.send(`Sacaste ${moneyBanco}\$ de tu banco`)
-            return
+            config.money.bank = 0;
+            config.money.efectivo += moneyBanco;
+            config.save();
+            message.channel.send(`Sacaste ${moneyBanco}\$ de tu banco`);
+            return;
         }
-        let moneySacar = parseInt(args[0])
+        let moneySacar = parseInt(args[0]);
         if (isNaN(moneySacar)) {
             message.channel.send('Debes colocar un numero');
             return;
@@ -38,9 +38,9 @@ export default new class command_withdraw implements bot_commands {
             message.channel.send('No tienes ese dinero en el banco');
             return;
         }
-        config.money.bank -= moneySacar
-        config.money.efectivo += moneySacar
-        config.save()
-        message.channel.send(`Sacaste ${moneySacar}\$ de tu banco`)
-    }
-}
+        config.money.bank -= moneySacar;
+        config.money.efectivo += moneySacar;
+        config.save();
+        message.channel.send(`Sacaste ${moneySacar}\$ de tu banco`);
+    };
+};

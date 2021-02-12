@@ -25,7 +25,7 @@ export function init(client: IClient): void {
     client.commands.set(withdraw.name, withdraw);
     client.commands.set(work.name, work);
     client.commands.set(xp.name, xp);
-    client.categoria.set(categoryOptions.name, categoryOptions);
+    client.categories.set(categoryOptions.name, categoryOptions);
 };
 
 export var categoryOptions = {
@@ -55,4 +55,4 @@ export var categoryOptions = {
         "le robaste la cartera a tu madre que diria ella",
         "Robaste un banco! :O"
     ]
-}
+};

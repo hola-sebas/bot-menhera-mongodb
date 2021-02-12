@@ -7,7 +7,8 @@ var config = {
         "mongodbUser": "danny",
         "database": "production",
         "prefix": "ki!",
-        "tnaiToken": "EHxye1JxbnxVxIaexI8TqFG685"
+        "tnaiToken": "EHxye1JxbnxVxIaexI8TqFG685",
+        "YTAPIKEY": "AIzaSyC0aswHuWX5_q79QshOAKtjMGMvMvnwMnw"
     },
     // dev mode
     development: {
@@ -17,7 +18,8 @@ var config = {
         "mongodbUser": "UserTest",
         "database": "test",
         "prefix": "ki!",
-        "tnaiToken": "EHxye1JxbnxVxIaexI8TqFG685"
+        "tnaiToken": "EHxye1JxbnxVxIaexI8TqFG685",
+        "YTAPIKEY": "AIzaSyC0aswHuWX5_q79QshOAKtjMGMvMvnwMnw"
     }
 };
 

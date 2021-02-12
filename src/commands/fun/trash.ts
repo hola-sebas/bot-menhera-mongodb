@@ -11,12 +11,12 @@ export default new class command_trash implements bot_commands {
     category = __dirname.split(require('path').sep).pop();
     disable = true;
     execute = async function (message: Message, args: string[]): Promise<void> {
-        let user = message.mentions.users.first() || message.author
-        const canva = new Canvas()
+        let user = message.mentions.users.first() || message.author;
+        const canva = new Canvas();
         let avatar = user.displayAvatarURL({ dynamic: false, format: 'png', size: 1024 });
         let image = await canva.delete(avatar);
         let attachment = new Discord.MessageAttachment(image, `${user.username}esbasura.jpg`);
         message.channel.send(attachment);
         return;
-    }
-}
+    };
+};

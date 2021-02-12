@@ -17,7 +17,7 @@ export function init(client: IClient): void {
     client.commands.set(trash.name, trash);
     client.commands.set(triggered.name, triggered);
     client.commands.set(wanted.name, wanted);
-    client.categoria.set(categoryOptions.name, categoryOptions);
+    client.categories.set(categoryOptions.name, categoryOptions);
 };
 
 export var categoryOptions = {

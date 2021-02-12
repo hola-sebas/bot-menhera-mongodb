@@ -27,6 +27,6 @@ const guildSchema = new Schema({
             channel: String
         }
     }
-})
+});
 
-export default model<IGuild>('guilds', guildSchema)
+export default model<IGuild>('guilds', guildSchema);

@@ -17,5 +17,5 @@ export default new class command_triggered implements bot_commands {
         let attachment = new Discord.MessageAttachment(image, "triggered.gif");
         message.channel.send(attachment);
         return;
-    }
-}
+    };
+};

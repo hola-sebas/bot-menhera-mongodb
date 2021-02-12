@@ -16,10 +16,10 @@ export function init(client: IClient): void {
     client.commands.set(prefix.name, prefix);
     client.commands.set(welcome.name, welcome);
     client.commands.set(xpcard.name, xpcard);
-    client.categoria.set(categoryOptions.name, categoryOptions);
+    client.categories.set(categoryOptions.name, categoryOptions);
 }
 export var categoryOptions = {
     canDisable: false,
     name: __dirname.split(require('path').sep).pop(),
     description: "Configura todo lo que puedas a tu gusto"
-}
+};

@@ -19,5 +19,5 @@ export default new class event_init {
         client.on(ev_guildMemberRemove.name, (args) => ev_guildMemberRemove.run(client, args));
 
         console.log(`Loaded ${client.eventNames().length} events...`);
-    }
-}
+    };
+};

@@ -3,8 +3,7 @@ import { bot_commands } from "./bot-commands";
 
 export default interface IClient extends Discord.Client {
     commands: Discord.Collection<bot_commands["name"], bot_commands>;
-    categoria: Map<string | undefined, category>;
-    console: Discord.Collection<any, any>;
+    categories: Map<string | undefined, category>;
     user: Discord.ClientUser
 }
 

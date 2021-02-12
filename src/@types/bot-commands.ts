@@ -7,7 +7,9 @@ export interface bot_commands {
     usage: string;
     permissions: permissions[];
     disable: boolean;
+    authorPermissions?: permissions[];
     category?: string;
+    //! seconds not miliseconds
     cooldown?: number;
     aliases?: Array<string>;
     execute(message: Discord.Message, args: string[], client?: IClient, prefix?: string): void | Promise<void>;

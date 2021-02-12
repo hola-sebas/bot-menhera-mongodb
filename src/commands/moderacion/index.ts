@@ -5,7 +5,7 @@ import kick from "./kick";
 export function init(client: IClient): void {
     client.commands.set(ban.name, ban);
     client.commands.set(kick.name, kick);
-    client.categoria.set(categoryOptions.name, categoryOptions);
+    client.categories.set(categoryOptions.name, categoryOptions);
 };
 
 export var categoryOptions = {

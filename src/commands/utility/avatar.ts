@@ -18,5 +18,5 @@ export default new class command_avatar implements bot_commands {
             .setColor('RANDOM');
         message.channel.send(avatar);
         return;
-    }
-}
+    };
+};

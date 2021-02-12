@@ -10,10 +10,10 @@ export default new class command_batslap implements bot_commands {
     category = __dirname.split(require('path').sep).pop();
     disable = true;
     execute = async function (message: Message, args: string[]): Promise<void> {
-        let user = message.mentions.users.first()
+        let user = message.mentions.users.first();
         if (!user) {
-            message.channel.send('Menciona a alguien para darle una baticachetada')
-            return
+            message.channel.send('Menciona a alguien para darle una baticachetada');
+            return;
         }
         const canva = new swiftcord.Canvas();
         let avatar = user.displayAvatarURL({ dynamic: false, format: 'png', size: 1024 });
@@ -21,5 +21,5 @@ export default new class command_batslap implements bot_commands {
         let attachment = new Discord.MessageAttachment(image, "batslap.png");
         message.channel.send(attachment);
         return;
-    }
-}
+    };
+};

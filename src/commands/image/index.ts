@@ -30,7 +30,7 @@ export function init(client: IClient): void {
     client.commands.set(sad.name, sad);
     client.commands.set(waifu.name, waifu);
     client.commands.set(wallpaper.name, wallpaper);
-    client.categoria.set(categoryOptions.name, categoryOptions);
+    client.categories.set(categoryOptions.name, categoryOptions);
 };
 
 export var categoryOptions = {
@@ -60,4 +60,4 @@ export var categoryOptions = {
         "https://i.pinimg.com/564x/fc/8d/45/fc8d4511b92f8ddbbe31817404fd3a12.jpg",
         "https://pbs.twimg.com/media/EMyfvEdU8AEIPvT.jpg"
     ]
-}
+};

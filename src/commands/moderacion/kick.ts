@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { bot_commands, permissions } from "../../@types/bot-commands"
+import { bot_commands, permissions } from "../../@types/bot-commands";
 
 export default new class command_kick implements bot_commands {
     name = 'kick';
@@ -7,10 +7,11 @@ export default new class command_kick implements bot_commands {
     usage = 'kick <@usuario>';
     aliases = ['ki', 'ck'];
     permissions: permissions[] = ['SEND_MESSAGES', 'VIEW_CHANNEL', 'KICK_MEMBERS', 'ADD_REACTIONS'];
+    authorPermissions: permissions[] = ["ADMINISTRATOR", "KICK_MEMBERS"];
     category = __dirname.split(require('path').sep).pop();
     disable = false;
 
     execute = function (message: Message, args: string[]): void {
-        message.channel.send('Modulo en construccion')
-    }
-}
+        message.channel.send('Modulo en construccion');
+    };
+};

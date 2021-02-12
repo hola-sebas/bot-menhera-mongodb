@@ -12,7 +12,7 @@ export default new class command_rob implements bot_commands {
     category = __dirname.split(require('path').sep).pop();
     disable = true;
     execute = async function (message: Discord.Message, args: string[], client: IClient): Promise<void> {
-        let usuRobado = message.mentions.users.first()
+        let usuRobado = message.mentions.users.first();
         if (!usuRobado) {
             message.channel.send('Debes mencionar a un usuario para robar');
             return;
@@ -25,16 +25,16 @@ export default new class command_rob implements bot_commands {
             message.channel.send('No puedes robarme a mi >:(');
             return;
         }
-        const dbUsuRobado = await user.findOne({ userId: usuRobado.id })
+        const dbUsuRobado = await user.findOne({ userId: usuRobado.id });
         if (!dbUsuRobado) {
             message.channel.send('Ese usuario no existe :(');
             return;
         }
-        const dbUsuLadron = await user.findOne({ userId: message.author.id })
-        if(!dbUsuLadron) return;
-        let dineroParaRobar = dbUsuRobado.money.efectivo
+        const dbUsuLadron = await user.findOne({ userId: message.author.id });
+        if (!dbUsuLadron) return;
+        let dineroParaRobar = dbUsuRobado.money.efectivo;
         if (dineroParaRobar < 50) {
-            message.channel.send('No puedes robarle a alguien que tenga menos de 50$ en efectivo')
+            message.channel.send('No puedes robarle a alguien que tenga menos de 50$ en efectivo');
             return;
         };
         let dineroRobado = Math.round(Math.random() * (Math.round(dineroParaRobar / 4)));
@@ -44,5 +44,5 @@ export default new class command_rob implements bot_commands {
         dbUsuRobado.save();
         dbUsuLadron.save();
         return;
-    }
-}
+    };
+};

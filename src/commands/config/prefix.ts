@@ -8,15 +8,11 @@ export default new class command_prefix implements bot_commands {
     usage = 'prefix <prefijo>';
     aliases = ['setprefix', 'setprefijo', 'prefijo'];
     permissions: permissions[] = ['SEND_MESSAGES', 'VIEW_CHANNEL'];
+    authorPermissions: permissions[] = ["ADMINISTRATOR", "MANAGE_MESSAGES", "MANAGE_CHANNELS"];
     category = __dirname.split(require('path').sep).pop();
     disable = false;
 
     execute = async function (message: Discord.Message, args: string[]): Promise<void> {
-        if (!message.member?.permissions.has('ADMINISTRATOR')) {
-            message.channel.send('No tienes los permisos para ejecutar este comando').then(m => m.delete({ timeout: 5000 }));
-            return;
-        }
-
         let prefix = await guild.findOne({ guildId: message.guild?.id });
         if (!prefix) return;
         let newprefix = args[0];
@@ -25,11 +21,11 @@ export default new class command_prefix implements bot_commands {
             return;
         }
         if (newprefix.length > 3) {
-            message.channel.send('No puedes poner un prefijo mayor a 3 caracteres')
+            message.channel.send('No puedes poner un prefijo mayor a 3 caracteres');
             return;
         }
         prefix.configuracion.prefix = newprefix;
         prefix.save();
         message.channel.send(`ok ahora mi nuevo prefix va a ser ${newprefix}`);
-    }
-}
+    };
+};

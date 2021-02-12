@@ -10,7 +10,7 @@ export function init(client: IClient): void {
     client.commands.set(donate.name, donate);
     client.commands.set(ping.name, ping);
     client.commands.set(stats.name, stats);
-    client.categoria.set(categoryOptions.name, categoryOptions);
+    client.categories.set(categoryOptions.name, categoryOptions);
 }
 
 export var categoryOptions = {

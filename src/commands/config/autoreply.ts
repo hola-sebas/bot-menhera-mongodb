@@ -8,15 +8,12 @@ export default new class command_autoreply implements bot_commands {
     usage = 'autoreply';
     aliases = ['reply'];
     permissions: permissions[] = ['SEND_MESSAGES', 'VIEW_CHANNEL'];
+    authorPermissions: permissions[] = ["ADMINISTRATOR"];
     category = __dirname.split(require('path').sep).pop();
     disable = false;
     cooldown = 5;
 
     execute = async function (message: Discord.Message, args: string[]): Promise<void> {
-        if (!message.member?.permissions.has('ADMINISTRATOR')) {
-            message.channel.send('No tienes permisos para hacer eso ').then(m => m.delete({ timeout: 5000 }));
-            return;
-        };
         let config = await guild.findOne({ guildId: message.guild?.id });
         if (!config) return;
         let activado = config.mensajes.autoReply;
@@ -29,5 +26,5 @@ export default new class command_autoreply implements bot_commands {
             config.save();
             message.channel.send('Ok **Active** la respuesta automatica a mensajes');
         };
-    }
-}
+    };
+};

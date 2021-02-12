@@ -16,7 +16,7 @@ export default new class command_hex implements bot_commands {
             message.channel.send('Debes poner un color en codigo hexadecimal');
             return;
         }
-        
+
         if (color.indexOf('#') == 0) {
             color = color.substr(1, color.length - 1);
         }
@@ -34,5 +34,5 @@ export default new class command_hex implements bot_commands {
             .setImage(`attachment://hex_${color}.png`)
             .setColor(`#${color}`);
         message.channel.send(embed);
-    }
-}
+    };
+};

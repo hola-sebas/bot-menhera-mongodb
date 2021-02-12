@@ -20,4 +20,4 @@ export default async (callback: () => void) => {
         console.error(`ERROR exit code 2: someting worng while connecting to DB: ` + err);
         process.exit(2);
     }
-}
+};

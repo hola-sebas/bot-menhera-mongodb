@@ -9,6 +9,7 @@ export default new class command_ping implements bot_commands {
     permissions: permissions[] = ['SEND_MESSAGES', 'VIEW_CHANNEL', 'EMBED_LINKS'];
     category = __dirname.split(require('path').sep).pop();
     disable = true;
+    cooldown = 60;
     execute = async function (message: Discord.Message, args: string[]): Promise<void> {
         let date1 = Date.now();
         await bugs.find();
@@ -19,5 +20,5 @@ export default new class command_ping implements bot_commands {
             .setColor("RANDOM");
         message.channel.send(embed);
         return;
-    }
-}
+    };
+};

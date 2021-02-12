@@ -5,6 +5,7 @@ import Discord from "discord.js";
 import config from "./config";
 import connectDatabase from "./database";
 import IClient from "./@types/discord-client";
+import { init as initTaniClient } from "./tnai-client";
 
 // scrips initializators
 import utils from "./scripts/processEvents";
@@ -13,8 +14,7 @@ import events from "./scripts/events";
 
 const client = <IClient>new Discord.Client({ ws: { intents: 32767 } });
 client.commands = new Discord.Collection();
-client.categoria = new Map();
-client.console = new Discord.Collection();
+client.categories = new Map();
 
 
 //Ejecucion de scripts
@@ -29,9 +29,9 @@ try {
 }
 //Fin de la ejecucion de scripts 
 
-connectDatabase(() => {
+connectDatabase(async () => {
+  await initTaniClient();
   console.timeEnd("init time");
-
   console.log(`Logging in`);
 
   client.login(config.token).then(() => {

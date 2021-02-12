@@ -17,8 +17,8 @@ export default new class command_bugreport implements bot_commands {
                 message.channel.send('Debes poner un bug para reportar');
                 return;
             }
-            let config = await bugs.findOne({ userId: message.author.id })
-            let bug = args.join(' ')
+            let config = await bugs.findOne({ userId: message.author.id });
+            let bug = args.join(' ');
             if (bug.length > 1000) {
                 message.channel.send('No puedes poner un bug mayor a 1000 caracteres');
                 return;
@@ -28,21 +28,20 @@ export default new class command_bugreport implements bot_commands {
                     userId: message.author.id,
                     username: message.author.username,
                     bug: [bug]
-                })
-                newBug.save()
-                message.channel.send('Se a reportado el bug correctamente, gracias por apoyar a mejorar este bot')
+                });
+                newBug.save();
             } else {
-                config.bug.push(bug)
+                config.bug.push(bug);
                 await bugs.findOneAndUpdate({ userId: message.author.id }, {
                     userId: message.author.id,
                     username: message.author.username,
                     bug: config.bug
-                })
-                message.channel.send('Se a reportado el bug correctamente, gracias por apoyar a mejorar este bot')
+                });
             }
+            message.channel.send('Se a reportado el bug correctamente, gracias por apoyar a mejorar este bot');
         } catch (err) {
-            message.channel.send('Lo siento hubo un error al reportar el bug :(')
+            message.channel.send('Lo siento hubo un error al reportar el bug :(');
             console.log('\n', err);
         }
-    }
-}
+    };
+};

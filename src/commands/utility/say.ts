@@ -7,14 +7,11 @@ export default new class command_say implements bot_commands {
     description = 'Dime que tengo que decir';
     usage = 'say (canal) <mensaje>';
     permissions: permissions[] = ['SEND_MESSAGES', 'VIEW_CHANNEL', 'EMBED_LINKS', 'MANAGE_MESSAGES'];
+    authorPermissions: permissions[] = ["ADMINISTRATOR"];
     category = __dirname.split(require('path').sep).pop();
     disable = true;
 
     execute = function (message: Message, args: string[], client: IClient, prefix: string): void {
-        if (!message.member?.permissions.has('ADMINISTRATOR')) {
-            message.channel.send('Lo siento pero no tienes permisos para ejecutar este comando').then(m => m.delete({ timeout: 5000 }));
-            return;
-        };
         let canal = message.mentions.channels.first();
         if (!canal) {
             let mensaje = args.slice(0).join(" ");
@@ -28,8 +25,8 @@ export default new class command_say implements bot_commands {
         let noMencion = args[0];
         if (noMencion.indexOf('<') == -1 && noMencion.indexOf('>') == -1 && noMencion.indexOf('#') == -1) {
             message.channel.send(`Debes poner el canal al principio!\nEjemplo: \`${prefix}say #canal hola\``)
-                .then(m => m.delete({ timeout: 10000 }))
-            return
+                .then(m => m.delete({ timeout: 10000 }));
+            return;
         }
         let mensaje = args.slice(1).join(" ");
         if (!mensaje.length) {
@@ -49,30 +46,30 @@ export default new class command_say implements bot_commands {
         }
 
         message.channel.send(`Lo quieres en un embed?`).then(msg => {
-            msg.react('✅')
-            msg.react('❌')
+            msg.react('✅');
+            msg.react('❌');
             const filtro = (reaction: Discord.MessageReaction, user: Discord.User) => {
                 return ["✅", "❌"].includes(reaction.emoji.name) && user.id === message.author.id;
             };
             msg.awaitReactions(filtro, { max: 1, time: 30000, errors: ["time"] }).catch(() => {
-                msg.delete()
-                message.channel.send('No tomaste una eleccion <:aquacry:735880078675673168>').then(m => m.delete({ timeout: 5000 }))
+                msg.delete();
+                message.channel.send('No tomaste una eleccion <:aquacry:735880078675673168>').then(m => m.delete({ timeout: 5000 }));
             }).then(coleccionado => {
-                if (!coleccionado) return
-                const reaccion = coleccionado.first()
+                if (!coleccionado) return;
+                const reaccion = coleccionado.first();
                 if (reaccion?.emoji.name == "✅") {
                     const embed = new Discord.MessageEmbed()
                         .setDescription(mensaje)
-                        .setColor(0x33acdd)
+                        .setColor(0x33acdd);
                     msg.delete();
                     canal?.send(embed);
-                    message.channel.send("Listo!").then(l => l.delete({ timeout: 5000 }))
+                    message.channel.send("Listo!").then(l => l.delete({ timeout: 5000 }));
                 } else if (reaccion?.emoji.name == "❌") {
                     msg.delete();
                     canal?.send(mensaje);
-                    message.channel.send("Listo!").then(l => l.delete({ timeout: 5000 }))
+                    message.channel.send("Listo!").then(l => l.delete({ timeout: 5000 }));
                 }
-            })
-        })
-    }
-}
+            });
+        });
+    };
+};

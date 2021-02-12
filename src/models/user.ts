@@ -17,7 +17,7 @@ const userSchema = new Schema({
         nivel: Number,
         url: {
             type: String,
-            default: 'https://menherachan.herokuapp.com/images/backgroundimage.jpg'
+            default: 'https://cdn.discordapp.com/attachments/730211053710868503/809911071242584094/kVmklIMxm84.jpg'
         },
         color: {
             type: String,
@@ -44,6 +44,6 @@ const userSchema = new Schema({
             productos: Array
         }
     }
-})
+});
 
 export default model<IUsers>('users', userSchema);

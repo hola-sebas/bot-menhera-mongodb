@@ -14,7 +14,7 @@ export default new class command_shop implements bot_commands {
     permissions: permissions[] = ['SEND_MESSAGES', 'VIEW_CHANNEL', 'EMBED_LINKS'];
     category = __dirname.split(require('path').sep).pop();
     disable = true;
-    
+
     execute = async function (message: Discord.Message, args: string[], client: IClient): Promise<void> {
         const accion = args[0];
         if (!accion) {
@@ -33,7 +33,7 @@ export default new class command_shop implements bot_commands {
                 break;
             case 'cancel':
                 cancel(message, args);
-                break
+                break;
             case 'open':
                 open(message);
                 break;
@@ -44,8 +44,8 @@ export default new class command_shop implements bot_commands {
                 info(message);
                 break;
             default:
-                message.channel.send('Esa accion no existe\nDebes especificar una accion para realizar asi \`buy\` \`shell\` \`show\` \`cancel\` \`open\` \`close\` \`info\`')
+                message.channel.send('Esa accion no existe\nDebes especificar una accion para realizar asi \`buy\` \`shell\` \`show\` \`cancel\` \`open\` \`close\` \`info\`');
                 break;
         }
-    }
-}
+    };
+};

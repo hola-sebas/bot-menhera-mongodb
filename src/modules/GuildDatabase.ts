@@ -17,7 +17,7 @@ export default async function (message: Message | { guild: Guild; }, client: ICl
         mensajes: {
             autoReply: true,
             welcome: {
-                img: 'https://menherachan.herokuapp.com/images/backgroundimage.jpg',
+                img: 'https://cdn.discordapp.com/attachments/730211053710868503/809911071242584094/kVmklIMxm84.jpg',
                 message: 'Bienvenido al server',
                 channel: '0'
             },
