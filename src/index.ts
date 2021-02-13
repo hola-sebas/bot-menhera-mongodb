@@ -5,7 +5,7 @@ import Discord from "discord.js";
 import config from "./config";
 import connectDatabase from "./database";
 import IClient from "./@types/discord-client";
-import { init as initTaniClient } from "./tnai-client";
+import { init as iniTnaiClient } from "./tnai-client";
 
 // scrips initializators
 import utils from "./scripts/processEvents";
@@ -30,7 +30,7 @@ try {
 //Fin de la ejecucion de scripts 
 
 connectDatabase(async () => {
-  await initTaniClient();
+  await iniTnaiClient();
   console.timeEnd("init time");
   console.log(`Logging in`);
 
