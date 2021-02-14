@@ -1,7 +1,7 @@
 import { Document } from "mongoose";
 
 export default interface user_model extends Document {
-    userId: string;
+    userID: string;
     money: {
         efectivo: number,
         bank: number;
@@ -12,6 +12,11 @@ export default interface user_model extends Document {
         nivel: number,
         url: string,
         color: string;
+    };
+    behavior: {
+        score: number;
+        lastServerBanned: string;
+        
     };
     inventory: {
         bag: Array<{

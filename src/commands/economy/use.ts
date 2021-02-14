@@ -17,7 +17,7 @@ export default new class command_use implements bot_commands {
             message.channel.send('Debes poner un item para usar!');
             return;
         }
-        const config = await user.findOne({ userId: message.author.id });
+        const config = await user.findOne({ userID: message.author.id });
         if (!config) return;
         let usuBag = config.inventory.bag;
         let indexItemBag = usuBag.findIndex(index => index.item == itemToUse);

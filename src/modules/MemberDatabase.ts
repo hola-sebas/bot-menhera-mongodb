@@ -9,7 +9,7 @@ import user from '../models/user';
  */
 export default async function (message: Message, client: IClient): Promise<void> {
     if (message.author.bot) return;
-    let config = await user.findOne({ userId: message.author.id });
+    let config = await user.findOne({ userID: message.author.id });
     if (config) return;
     const newUser = new user({
         userId: message.author.id,

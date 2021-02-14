@@ -9,7 +9,7 @@ export default async function show(message: Message) {
         message.channel.send('Los bots no pueden tener una tienda :(');
         return;
     }
-    const dbUsu = await user.findOne({ userId: usuMencion.id });
+    const dbUsu = await user.findOne({ userID: usuMencion.id });
 
 
     if (!dbUsu) {

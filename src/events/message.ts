@@ -29,7 +29,7 @@ export default new class event_message {
         let prefix = configJSON.prefix;
 
         //ejecucion de modulos
-        await module_GuildDB(message, client);
+        await module_GuildDB(message.guild.id, client);
         await module_MemberDB(message, client);
 
         await module_AutoURL.run(message);
@@ -39,11 +39,11 @@ export default new class event_message {
         //fin de ejecucion de modulos
 
         // verificar el registro de la base de datos
-        let usuario = await userDB.findOne({ userId: message.author.id });
+        let usuario = await userDB.findOne({ userID: message.author.id });
         if (!usuario) return;
-        let configuracion = await guild.findOne({ guildId: message.guild.id });
+        let configuracion = await guild.findOne({ guildID: message.guild.id });
         if (!configuracion) return;
-        prefix = configuracion.configuracion.prefix;
+        prefix = configuracion.config.prefix;
 
         if (!message.content.startsWith(prefix)) return;
         // fin de la verificacion
@@ -62,8 +62,8 @@ export default new class event_message {
         const args = message.content.slice(prefix.length).trim().split(" ");
         const commandName = args.shift()?.toLowerCase() || "";
 
-        let disabled_commands = configuracion.configuracion.comandosDesactivados;
-        let disabled_categories = configuracion.configuracion.categoriasDesactivadas;
+        let disabled_commands = configuracion.config.disabledCommands;
+        let disabled_categories = configuracion.config.disabledCategories;
 
         const command = client.commands.get(commandName)
             || client.commands.find((cmd) => cmd.aliases?.includes(commandName) || false);

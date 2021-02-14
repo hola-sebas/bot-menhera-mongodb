@@ -25,12 +25,12 @@ export default new class command_rob implements bot_commands {
             message.channel.send('No puedes robarme a mi >:(');
             return;
         }
-        const dbUsuRobado = await user.findOne({ userId: usuRobado.id });
+        const dbUsuRobado = await user.findOne({ userID: usuRobado.id });
         if (!dbUsuRobado) {
             message.channel.send('Ese usuario no existe :(');
             return;
         }
-        const dbUsuLadron = await user.findOne({ userId: message.author.id });
+        const dbUsuLadron = await user.findOne({ userID: message.author.id });
         if (!dbUsuLadron) return;
         let dineroParaRobar = dbUsuRobado.money.efectivo;
         if (dineroParaRobar < 50) {

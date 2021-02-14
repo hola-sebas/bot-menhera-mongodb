@@ -19,7 +19,7 @@ export default new class command_xp implements bot_commands {
             message.channel.send('Esa soy yo!\nTengo un nivel I N F I N I T O (⌐■_■)');
             return;
         }
-        let config = await userdb.findOne({ userId: user.id });
+        let config = await userdb.findOne({ userID: user.id });
         if (!config) {
             message.channel.send('hmm no tengo datos de ese usuario');
             return;

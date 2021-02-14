@@ -15,10 +15,10 @@ export default new class command_enable implements bot_commands {
     cooldown = 5;
 
     execute = async function (message: discord.Message, args: string[], client: IClient): Promise<void> {
-        let config = await guild.findOne({ guildId: message.guild?.id });
+        let config = await guild.findOne({ guildID: message.guild?.id });
         if (!config) return;
-        let comandos = config.configuracion.comandosDesactivados;
-        let categorias = config.configuracion.categoriasDesactivadas;
+        let comandos = config.config.disabledCommands;
+        let categorias = config.config.disabledCategories;
         let opcion = args[0];
         let argumentos = args[1];
 
@@ -32,8 +32,8 @@ export default new class command_enable implements bot_commands {
                 return;
             }
             if (categorias.includes(argumentos)) {
-                let indexcategoria = config.configuracion.categoriasDesactivadas.findIndex(i => i == argumentos);
-                config.configuracion.categoriasDesactivadas.splice(indexcategoria);
+                let indexcategoria = config.config.disabledCategories.findIndex(i => i == argumentos);
+                config.config.disabledCategories.splice(indexcategoria);
                 config.save();
                 message.channel.send(`Ok habilite la categoria ${argumentos}`);
                 return;
@@ -54,8 +54,8 @@ export default new class command_enable implements bot_commands {
                 return;
             }
             if (comandos.includes(command.name)) {
-                let indexcomand = config.configuracion.comandosDesactivados.findIndex(i => i == command.name);
-                config.configuracion.comandosDesactivados.splice(indexcomand);
+                let indexcomand = config.config.disabledCommands.findIndex(i => i == command.name);
+                config.config.disabledCommands.splice(indexcomand);
                 config.save();
                 message.channel.send(`Ok habilite el comando ${argumentos}`);
                 return;

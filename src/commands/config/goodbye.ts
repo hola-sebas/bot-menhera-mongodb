@@ -16,7 +16,7 @@ export default new class command_goodbye implements bot_commands {
             message.channel.send('Debes especificar una accion a realizar con \`channel o chnl\` y \`message o msg\`');
             return;
         };
-        const config = await guild.findOne({ guildId: message.guild?.id });
+        const config = await guild.findOne({ guildID: message.guild?.id });
         if (!config) return;
         switch (args[0]) {
             case 'chnl':
@@ -26,7 +26,7 @@ export default new class command_goodbye implements bot_commands {
                     return;
                 }
                 if (args[1] == 'del') {
-                    config.mensajes.goodbye.channel = "0";
+                    config.messages.goodbye.channel = "0";
                     config.save();
                     message.channel.send('Ok desactive el canal de despedidas');
                     return;
@@ -40,7 +40,7 @@ export default new class command_goodbye implements bot_commands {
                     message.channel.send('No tengo permisos para configurar ese canal como el de despedidas');
                     return;
                 }
-                config.mensajes.goodbye.channel = canal.id;
+                config.messages.goodbye.channel = canal.id;
                 config.save();
                 message.channel.send(`Ok ahora el canal de despedidas es <#${canal.id}>`);
                 break;
@@ -51,13 +51,13 @@ export default new class command_goodbye implements bot_commands {
                     return;
                 }
                 if (args[1] == 'del') {
-                    config.mensajes.goodbye.message = '{user} Se fue de el server';
+                    config.messages.goodbye.message = '{user} Se fue de el server';
                     config.save();
                     message.channel.send(`Ok reestableci el mensaje de despedidas a \n{user} Se fue de el server`);
                     return;
                 }
                 let mensaje = args.slice(1).join(' ');
-                config.mensajes.goodbye.message = mensaje;
+                config.messages.goodbye.message = mensaje;
                 config.save();
                 let regexUser = /{user}/g;
                 let regexGuild = /{guild}/g;

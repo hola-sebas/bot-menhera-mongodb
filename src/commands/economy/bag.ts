@@ -12,7 +12,7 @@ export default new class command_bag implements bot_commands {
     disable = true;
 
     execute = async function (message: Discord.Message, args: string[]): Promise<void> {
-        let config = await user.findOne({ userId: message.author.id });
+        let config = await user.findOne({ userID: message.author.id });
         if (!config) return;
         let bag = config.inventory.bag;
 

@@ -18,9 +18,9 @@ export default new class module_mencion {
             enfriamiento.delete(message.author.id);
         }, this.cooldown);
 
-        let config = await guild.findOne({ guildId: message.guild?.id });
+        let config = await guild.findOne({ guildID: message.guild?.id });
         if (!config) return;
-        let prefix = config.configuracion.prefix || configJSON.prefix;
+        let prefix = config.config.prefix || configJSON.prefix;
 
         // si se menciona el bot responde con su prefijo
 

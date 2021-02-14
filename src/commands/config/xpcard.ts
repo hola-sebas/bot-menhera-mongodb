@@ -21,7 +21,7 @@ export default new class command_xpcard implements bot_commands {
             return;
         }
         let user = message.author;
-        let config = await userdb.findOne({ userId: user.id });
+        let config = await userdb.findOne({ userID: user.id });
         if (!config) return;
         let color = config.xp.color;
         let level = config.xp.nivel;

@@ -13,7 +13,7 @@ export default new class command_profile implements bot_commands {
 
     execute = async function (message: Discord.Message, args: string[]): Promise<void> {
         let usu = message.mentions.users.first() || message.author;
-        const config = await user.findOne({ userId: usu.id });
+        const config = await user.findOne({ userID: usu.id });
         if (!config) {
             message.channel.send('hmm no trengo datos de este usuario');
             return;

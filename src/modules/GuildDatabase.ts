@@ -1,29 +1,38 @@
-import { Message, Guild } from 'discord.js';
 import IClient from '../@types/discord-client';
 import configFile from '../config';
 import guild from '../models/guild';
+import { guildInfo } from "../@types/mongo/guild-model";
 
-export default async function (message: Message | { guild: Guild; }, client: IClient): Promise<void> {
+export default async function (guildID: string, client: IClient): Promise<void> {
     //iniciar servidor en la base de datos 
-    let config = await guild.findOne({ guildId: message.guild?.id });
+    let config = await guild.findOne({ guildID });
     if (config) return;
-    const newGuild = new guild({
-        guildId: message.guild?.id,
-        configuracion: {
-            prefix: configFile.prefix,
-            comandosDesactivados: [],
-            categoriasDesactivadas: []
-        },
-        mensajes: {
+    const newGuild = new guild(<guildInfo>{
+        guildID: guildID,
+        messages: {
             autoReply: true,
-            welcome: {
-                img: 'https://cdn.discordapp.com/attachments/730211053710868503/809911071242584094/kVmklIMxm84.jpg',
-                message: 'Bienvenido al server',
-                channel: '0'
-            },
             goodbye: {
-                message: 'Se fue de el server',
-                channel: '0'
+                channel: "0",
+                message: "Se fue del servidor"
+            },
+            welcome:{
+                channel: "0",
+                message: "Bienvenido al servidor",
+                img: "https://cdn.nekos.life/wallpaper/4bkrqTpaLYo.png"
+            }
+        },
+        config: {
+            prefix: configFile.prefix,
+            customCommands: [],
+            disabledCategories: [],
+            disabledCommands: [],
+            moderation: {
+                logChannel: "0",
+                logEvents: []
+            },
+            music: {
+                DJChannels: [],
+                DJRoles: []
             }
         }
     });

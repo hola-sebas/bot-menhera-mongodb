@@ -15,7 +15,7 @@ export default new class command_disable implements bot_commands {
     cooldown = 5;
 
     execute = async function (message: discord.Message, args: string[], client: IClient): Promise<void> {
-        let config = await guild.findOne({ guildId: message.guild?.id });
+        let config = await guild.findOne({ guildID: message.guild?.id });
         if (!config) return;
         switch (args[0]) {
             case '-co':
@@ -27,7 +27,7 @@ export default new class command_disable implements bot_commands {
                 const command = client.commands.get(comando)
                     || client.commands.find((cmd) => cmd.aliases?.includes(comando) || false);
                 if (!command) return;
-                let disables = config.configuracion.comandosDesactivados;
+                let disables = config.config.disabledCommands;
 
                 if (disables.includes(command.name)) {
                     message.channel.send('El comando ya esta desactivado');
@@ -38,7 +38,7 @@ export default new class command_disable implements bot_commands {
                     return;
                 }
                 if (command) {
-                    config.configuracion.comandosDesactivados.push(command.name);
+                    config.config.disabledCommands.push(command.name);
                     config.save();
                     message.channel.send('Comando desactivado');
                     return;
@@ -53,7 +53,7 @@ export default new class command_disable implements bot_commands {
                 }
                 let categorias = client.categories;
                 let argumentos = args[1];
-                let ya = config.configuracion.categoriasDesactivadas;
+                let ya = config.config.disabledCategories;
                 if (!categorias.has(argumentos)) {
                     message.channel.send('Esa categoria no existe');
                     return;
@@ -80,7 +80,7 @@ export default new class command_disable implements bot_commands {
                 }
 
                 if (categorias.has(argumentos)) {
-                    config.configuracion.categoriasDesactivadas.push(argumentos);
+                    config.config.disabledCategories.push(argumentos);
                     config.save();
                     message.channel.send('Ok desabilite esa categoria');
                     return;

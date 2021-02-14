@@ -13,7 +13,7 @@ export default new class command_mine implements bot_commands {
     cooldown = 1800;
 
     execute = async function (message: Discord.Message, args: string[]): Promise<void> {
-        let config = await user.findOne({ userId: message.author.id });
+        let config = await user.findOne({ userID: message.author.id });
         if (!config) return;
         var random = Math.round(Math.random() * (11 - 1) + 1);
         var minRandom = Math.round(Math.random() * categoryOptions.minerales.length);

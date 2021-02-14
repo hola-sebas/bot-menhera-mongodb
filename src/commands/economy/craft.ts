@@ -42,7 +42,7 @@ export default new class command_craft implements bot_commands {
             message.channel.send('Estas tratando de crear un mineral que se debe conseguir minando');
             return;
         };
-        const config = await user.findOne({ userId: message.author.id });
+        const config = await user.findOne({ userID: message.author.id });
         if (!config) return;
         let authorBag = config.inventory.bag;
         if (materiales.length) {

@@ -19,7 +19,7 @@ export default new class command_welcome implements bot_commands {
             message.channel.send('Debes especificar una accion a realizar asi <card / channel / message>');
             return;
         };
-        const config = await guild.findOne({ guildId: message.guild?.id });
+        const config = await guild.findOne({ guildID: message.guild?.id });
         if (!config) return;
         switch (args[0]) {
             case 'card':
@@ -39,7 +39,7 @@ export default new class command_welcome implements bot_commands {
                 try {
                     let img = await render.run(message.author, linkURL || linkAttachment);
                     message.channel.stopTyping(true);
-                    config.mensajes.welcome.img = linkURL || linkAttachment;
+                    config.messages.welcome.img = linkURL || linkAttachment;
                     config.save();
                     message.channel.send('Ok este seria un ejemplo de tu tarjeta de bienvenida', { files: [img] });
                 } catch (err) {
@@ -52,12 +52,12 @@ export default new class command_welcome implements bot_commands {
             case 'chnl':
             case 'channel':
                 if (args[1] == 'del') {
-                    let ok = config.mensajes.welcome.channel;
+                    let ok = config.messages.welcome.channel;
                     if (ok == "0") {
                         message.channel.send('El canal de bienvenidas ya esta desabilitado');
                         return;
                     }
-                    config.mensajes.welcome.channel = '0';
+                    config.messages.welcome.channel = '0';
                     config.save();
                     message.channel.send('Ok desabilite el canal de bienvenidas');
                     return;
@@ -71,7 +71,7 @@ export default new class command_welcome implements bot_commands {
                     message.channel.send('No tengo permisos en ese canal');
                     return;
                 }
-                config.mensajes.welcome.channel = canal.id;
+                config.messages.welcome.channel = canal.id;
                 config.save();
                 message.channel.send(`Ok ahora el canal de bienvenidas es <#${canal.id}>`);
                 break;
@@ -84,12 +84,12 @@ export default new class command_welcome implements bot_commands {
                     return;
                 }
                 if (mensaje == 'del') {
-                    config.mensajes.welcome.message = 'Bienvenido al server!';
+                    config.messages.welcome.message = 'Bienvenido al server!';
                     config.save();
                     message.channel.send('Ok reestablecí el mansaje de bienvenida a \nBienvenido al server!');
                     return;
                 }
-                config.mensajes.welcome.message = mensaje;
+                config.messages.welcome.message = mensaje;
                 config.save();
                 let regex = /@{member}/g;
                 let regex1 = /{member}/g;

@@ -2,7 +2,7 @@ import Discord, { Message } from "discord.js";
 import user from "../../../models/user";
 
 export async function open(message: Message) {
-    const openDbAuthor = await user.findOne({ userId: message.author.id });
+    const openDbAuthor = await user.findOne({ userID: message.author.id });
     if (!openDbAuthor) return;
     let openShopOpen = openDbAuthor.inventory.shop.open;
     if (openShopOpen) {
@@ -14,7 +14,7 @@ export async function open(message: Message) {
     }
 }
 export async function close(message: Message) {
-    const closeDbAuthor = await user.findOne({ userId: message.author.id });
+    const closeDbAuthor = await user.findOne({ userID: message.author.id });
     if (!closeDbAuthor) return;
     let closeShopOpen = closeDbAuthor.inventory.shop.open;
     if (closeShopOpen) {
@@ -27,7 +27,7 @@ export async function close(message: Message) {
 }
 export async function info(message: Message) {
     let infoUsu = message.mentions.users.first() || message.author;
-    const infoDbUsu = await user.findOne({ userId: infoUsu.id });
+    const infoDbUsu = await user.findOne({ userID: infoUsu.id });
     if (!infoDbUsu) {
         message.channel.send('hmm no tengo datos de el ususario');
         return;

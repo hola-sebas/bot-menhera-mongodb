@@ -7,7 +7,7 @@ export default async function cancel(message: Message, args: string[]) {
         message.channel.send('Debes escribir un producto para quitar de la venta');
         return;
     }
-    const cancelDbAuthor = await user.findOne({ userId: message.author.id });
+    const cancelDbAuthor = await user.findOne({ userID: message.author.id });
     if (!cancelDbAuthor) return;
     let cancelIndexShop = cancelDbAuthor.inventory.shop.productos.findIndex(item => item.item == cancelProducto);
 

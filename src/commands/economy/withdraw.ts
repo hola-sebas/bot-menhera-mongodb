@@ -15,7 +15,7 @@ export default new class command_withdraw implements bot_commands {
             message.channel.send('Debes colocar un numero o all');
             return;
         }
-        const config = await user.findOne({ userId: message.author.id });
+        const config = await user.findOne({ userID: message.author.id });
         if (!config) return;
         let moneyBanco = config.money.bank;
         if (moneyBanco == 0) {

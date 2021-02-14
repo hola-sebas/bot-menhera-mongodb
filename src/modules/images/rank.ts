@@ -1,12 +1,12 @@
-import canvas from 'canvas';
+import canvas, { registerFont } from 'canvas';
 import { User } from 'discord.js';
+import path from "path";
 
 export default new class rankXpCardGenerator {
     async run(user: User, colorD: string, level: string, currentXP: number, neededXP: number, background: string) {
         let bg = background;
         let color = colorD;
-        if (!color) color = '#cd5c5c';
-        if (!bg) bg = '././img/Wallpaper.png';
+        registerFont(path.resolve("./fonts/Helvetica.ttf"), { family: "Helvetica" });
         const lienzo = canvas.createCanvas(934, 282);
         const ctx = lienzo.getContext('2d');
         let opacity = 0.5;
@@ -75,7 +75,7 @@ export default new class rankXpCardGenerator {
         let us = user.username.length > 15 ? user.username.substring(0, 17) + "..." : user.username;
 
         var name = us;
-        ctx.font = '40px Impact';
+        ctx.font = '40px Helvetica';
         ctx.fillStyle = 'white';
         ctx.textAlign = "left";
         ctx.fillText(name, 260, 162);
@@ -83,21 +83,21 @@ export default new class rankXpCardGenerator {
         let left = ctx.measureText(name).width + 277;
 
         ctx.save();
-        ctx.font = '25px Impact';
+        ctx.font = '25px Helvetica';
         ctx.fillStyle = '#7F8384';
         ctx.textAlign = "left";
         ctx.fillText(`#${user.discriminator}`, left, 162);
         ctx.restore();
 
         ctx.save();
-        ctx.font = '25px Impact';
+        ctx.font = '25px Helvetica';
         ctx.fillStyle = 'white';
         ctx.textAlign = "left";
         ctx.fillText(`LEVEL:`, temp, 99);
         ctx.restore();
 
         ctx.save();
-        ctx.font = '45px Impact';
+        ctx.font = '45px Helvetica';
         ctx.fillStyle = 'white';
         ctx.textAlign = "left";
         ctx.fillText(level, temp + 87, 99);
@@ -107,14 +107,14 @@ export default new class rankXpCardGenerator {
 
         let need = `/ ${neededXP} XP`;
 
-        ctx.font = '25px Impact';
+        ctx.font = '25px Helvetica';
         ctx.fillStyle = 'white';
         ctx.textAlign = "left";
         ctx.fillText(xp.toString(), 707, 165);
 
         left = ctx.measureText(xp.toString()).width + 710;
 
-        ctx.font = '25px Impact';
+        ctx.font = '25px Helvetica';
         ctx.fillStyle = '#7F8384';
         ctx.textAlign = "left";
         ctx.fillText(need, left, 165);

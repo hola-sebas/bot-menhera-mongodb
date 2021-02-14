@@ -12,7 +12,7 @@ export default new class command_balance implements bot_commands {
     disable = true;
     execute = async function (message: Discord.Message, args: string[]): Promise<void> {
         let mentionUser = message.mentions.users.first() || message.author;
-        const config = await user.findOne({ userId: mentionUser.id });
+        const config = await user.findOne({ userID: mentionUser.id });
         if (!config) return;
         let efectivo = config.money.efectivo;
         let banco = config.money.bank;

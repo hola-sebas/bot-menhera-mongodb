@@ -1,30 +1,39 @@
 import { Schema, model } from 'mongoose';
-import IGuild from "../@types/mongo/guild-model";
+import IGuild, { guildInfo } from "../@types/mongo/guild-model";
 import config from "../config";
 
 const guildSchema = new Schema({
-    guildId: {
+    guildID: {
         type: String,
         unique: true
     },
-    configuracion: {
+    messages: {
+        autoReply: Boolean,
+        goodbye: {
+            channel: String,
+            message: String
+        },
+        welcome: {
+            img: String,
+            channel: String,
+            message: String,
+        }
+    },
+    config: {
         prefix: {
             type: String,
             default: config.prefix
         },
-        comandosDesactivados: Array,
-        categoriasDesactivadas: Array
-    },
-    mensajes: {
-        autoReply: Boolean,
-        welcome: {
-            img: String,
-            message: String,
-            channel: String
+        customCommands: Array,
+        disabledCategories: Array,
+        disabledCommands: Array,
+        moderation: {
+            logChannel: String,
+            logEvents: Array
         },
-        goodbye: {
-            message: String,
-            channel: String
+        music: {
+            DJChannels: Array,
+            DJRoles: Array
         }
     }
 });

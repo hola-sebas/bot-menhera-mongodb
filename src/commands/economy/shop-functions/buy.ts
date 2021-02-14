@@ -16,7 +16,7 @@ export default async function buy(message: Message, args: string[], client: ICli
         message.channel.send('No tengo tiempo para abrir una tienda');
         return;
     };
-    const buyDbMencion = await user.findOne({ userId: buyUsuMencion.id });
+    const buyDbMencion = await user.findOne({ userID: buyUsuMencion.id });
     if (!buyDbMencion) {
         message.channel.send('hmm no tengo datos de este usuario');
         return;
@@ -41,7 +41,7 @@ export default async function buy(message: Message, args: string[], client: ICli
 
     if (!buyProducto) return;
 
-    const buyDbAuthor = await user.findOne({ userId: message.author.id });
+    const buyDbAuthor = await user.findOne({ userID: message.author.id });
     if (!buyDbAuthor) return;
     let buyMoneyAuthor = buyDbAuthor.money.efectivo;
     if (buyProducto.price > buyMoneyAuthor) {

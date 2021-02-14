@@ -18,9 +18,9 @@ export default new class module_autoReply {
 
         let mensaje = message.content.toLowerCase();
 
-        let config = await guild.findOne({ guildId: message.guild.id });
+        let config = await guild.findOne({ guildID: message.guild.id });
         if (!config) return;
-        let activado = config.mensajes.autoReply;
+        let activado = config.messages.autoReply;
         if (activado == false) return;
 
         if (mensaje.startsWith('hola')) {

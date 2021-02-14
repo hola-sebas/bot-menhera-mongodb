@@ -14,15 +14,15 @@ export default new class command_autoreply implements bot_commands {
     cooldown = 5;
 
     execute = async function (message: Discord.Message, args: string[]): Promise<void> {
-        let config = await guild.findOne({ guildId: message.guild?.id });
+        let config = await guild.findOne({ guildID: message.guild?.id });
         if (!config) return;
-        let activado = config.mensajes.autoReply;
+        let activado = config.messages.autoReply;
         if (activado == undefined || activado == true) {
-            config.mensajes.autoReply = false;
+            config.messages.autoReply = false;
             config.save();
             message.channel.send('Ok **Desactive** la respuesta automatica a mensajes');
         } else if (activado == false) {
-            config.mensajes.autoReply = true;
+            config.messages.autoReply = true;
             config.save();
             message.channel.send('Ok **Active** la respuesta automatica a mensajes');
         };

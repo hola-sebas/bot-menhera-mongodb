@@ -17,7 +17,7 @@ export default new class command_bugreport implements bot_commands {
                 message.channel.send('Debes poner un bug para reportar');
                 return;
             }
-            let config = await bugs.findOne({ userId: message.author.id });
+            let config = await bugs.findOne({ userID: message.author.id });
             let bug = args.join(' ');
             if (bug.length > 1000) {
                 message.channel.send('No puedes poner un bug mayor a 1000 caracteres');

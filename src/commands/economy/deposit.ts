@@ -14,7 +14,7 @@ export default new class command_deposit implements bot_commands {
             message.channel.send('Debes poner una cantidad a depositar o all para depositar todo');
             return;
         }
-        const config = await user.findOne({ userId: message.author.id });
+        const config = await user.findOne({ userID: message.author.id });
         if (!config) return;
         let efectivo = config.money.efectivo;
         if (efectivo == 0) {

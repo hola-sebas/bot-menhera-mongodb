@@ -8,7 +8,7 @@ export default async function shell(message: Message, args: string[]) {
         message.channel.send('Debes especificar el item que quieres vender');
         return;
     }
-    const shellConfig = await user.findOne({ userId: message.author.id });
+    const shellConfig = await user.findOne({ userID: message.author.id });
     if (!shellConfig) return;
     let shellIndexBag = shellConfig.inventory.bag.findIndex(item => item.item == shellItemToShell);
 

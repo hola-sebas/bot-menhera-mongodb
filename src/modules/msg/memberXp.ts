@@ -4,7 +4,7 @@ import render from '../images/rank';
 
 export default new class module_memberXP {
     run = async (message: Message) => {
-        let config = await user.findOne({ userId: message.author.id });
+        let config = await user.findOne({ userID: message.author.id });
         if (!config) return;
         let currentXP = config.xp.actual += Math.round(Math.random() * message.content.length);
         let needXP = config.xp.necesario;

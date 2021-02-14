@@ -13,7 +13,7 @@ export default new class command_prefix implements bot_commands {
     disable = false;
 
     execute = async function (message: Discord.Message, args: string[]): Promise<void> {
-        let prefix = await guild.findOne({ guildId: message.guild?.id });
+        let prefix = await guild.findOne({ guildID: message.guild?.id });
         if (!prefix) return;
         let newprefix = args[0];
         if (!newprefix) {
@@ -24,7 +24,7 @@ export default new class command_prefix implements bot_commands {
             message.channel.send('No puedes poner un prefijo mayor a 3 caracteres');
             return;
         }
-        prefix.configuracion.prefix = newprefix;
+        prefix.config.prefix = newprefix;
         prefix.save();
         message.channel.send(`ok ahora mi nuevo prefix va a ser ${newprefix}`);
     };
