@@ -1,6 +1,6 @@
 import Discord, { Message } from 'discord.js';
 import interfaceGuildModel from '../../@types/mongo/guild-model';
-import guild from '../../models/guild';
+
 const enfriamiento: Discord.Collection<string, boolean> = new Discord.Collection();
 
 export default new class module_autoReply {
@@ -40,7 +40,7 @@ export default new class module_autoReply {
         }
         //fin de las respuestas automaticas
     };
-    private conditions(value: string): boolean {
+    public conditions(value: string): boolean {
         return (/^((e)?f(e)?)$/i).test(value) || value.startsWith("hola");
     }
 };
