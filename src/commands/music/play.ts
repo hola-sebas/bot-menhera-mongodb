@@ -31,6 +31,7 @@ export default new class command_search implements bot_commands {
         }
         if (!args.length) {
             message.channel.send("debes poner algo para buscar!");
+            return;
         };
         var YTResults = await YTSearch(args.join(" "), YTopts);
 
