@@ -27,17 +27,17 @@ export default new class command_search implements bot_commands {
     async execute(message: Message, args: string[], client: IClient): Promise<any> {
         if (!message.member?.voice.channel) {
             message.channel.send("debes unirte a un canal de voz para poder saber donde puedo reproducir el video");
-            return;
+            return false;
         }
         if (!args.length) {
             message.channel.send("debes poner algo para buscar!");
-            return;
+            return false;
         };
         var YTResults = await YTSearch(args.join(" "), YTopts);
 
         if (!YTResults.results.length) {
             message.channel.send(`No encontre ningun resultado con: **${args.join(" ")}**`);
-            return;
+            return false;
         }
 
         var YTResultsEmbed = new MessageEmbed()
