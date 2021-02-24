@@ -14,7 +14,7 @@ export interface bot_commands {
     cooldown?: number;
     aliases?: Array<string>;
     mantenceMode?: boolean;
-    execute(message: Discord.Message, args: string[], client?: IClient, guildDatabase?: interfaceGuildModel, memberDatabase?: interfaceUserModel): void | Promise<void>;
+    execute(message: Discord.Message, args: string[], client?: IClient, guildDatabase?: interfaceGuildModel, memberDatabase?: interfaceUserModel): void | boolean | Promise<void | boolean>;
 }
 
 
