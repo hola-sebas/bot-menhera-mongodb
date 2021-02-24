@@ -131,7 +131,9 @@ export default new class event_message {
             if (process.env.NODE_ENV != "production")
                 console.log(sh.yellow(`Ejecutando el comando ${command.name} en ${message.guild.name}`));
 
-            await command.execute(message, args, client, guildDatabase, memberDatabase);
+            if (await command.execute(message, args, client, guildDatabase, memberDatabase) == false) {
+                timestamps?.delete(message.author.id);
+            };
         } catch (err) {
 
             console.error("There was an error during the command execution the error will be shown below: \n", err);
