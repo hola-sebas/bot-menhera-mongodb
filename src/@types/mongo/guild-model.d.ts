@@ -1,8 +1,8 @@
 import { Document } from "mongoose";
+// ! IMPORTANT if the guild interface is changed u need update "../../modules/GuildDatabase" & "../../models/guild.ts"
+export interface interfaceGuildModel extends Document, guildInfo { }
 
-export interface guildModel extends Document, guildInfo { }
-
-export default guildModel;
+export default interfaceGuildModel;
 
 export interface guildInfo {
     guildID: string;
@@ -21,6 +21,8 @@ export interface guildInfo {
         rankNotificationChannel: string;
         welcome: {
             img: string;
+            imgMessage: string;
+            sendImage: boolean;
             message: string;
             channel: string;
         };

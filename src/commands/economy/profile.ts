@@ -4,7 +4,7 @@ import { bot_commands, permissions } from '../../@types/bot-commands';
 
 export default new class command_profile implements bot_commands {
     name = 'profile';
-    description = 'Muestra tu perfil';
+    description = 'Muestra tu perfil o el del que menciones';
     usage = 'profile <@usuario>';
     aliases = ['perfil'];
     permissions: permissions[] = ['SEND_MESSAGES', 'VIEW_CHANNEL', 'EMBED_LINKS'];

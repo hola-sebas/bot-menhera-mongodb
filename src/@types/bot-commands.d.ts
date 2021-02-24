@@ -1,5 +1,7 @@
 import Discord from "discord.js";
 import IClient from "./discord-client";
+import interfaceGuildModel from "./mongo/guild-model";
+import interfaceUserModel from "./mongo/user-model";
 
 export interface bot_commands {
     name: string;
@@ -9,14 +11,14 @@ export interface bot_commands {
     disable: boolean;
     authorPermissions?: permissions[];
     category?: string;
-    //! seconds not miliseconds
     cooldown?: number;
     aliases?: Array<string>;
-    execute(message: Discord.Message, args: string[], client?: IClient, prefix?: string): void | Promise<void>;
+    mantenceMode?: boolean;
+    execute(message: Discord.Message, args: string[], client?: IClient, guildDatabase?: interfaceGuildModel, memberDatabase?: interfaceUserModel): void | Promise<void>;
 }
 
 
-export type permissions = "ADMINISTRATOR" // (implicitly has all permissions, and bypasses all channel overwrites)
+export type permissions =   "ADMINISTRATOR" // (implicitly has all permissions, and bypasses all channel overwrites)
     | "CREATE_INSTANT_INVITE" // (create invitations to the guild)
     | "KICK_MEMBERS"
     | "BAN_MEMBERS"

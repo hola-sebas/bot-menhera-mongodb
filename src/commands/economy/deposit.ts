@@ -1,6 +1,9 @@
 import user from '../../models/user';
 import Discord from "discord.js";
 import { bot_commands, permissions } from '../../@types/bot-commands';
+import interfaceGuildModel, { guildInfo } from '../../@types/mongo/guild-model';
+import interfaceUserModel from '../../@types/mongo/user-model';
+import IClient from '../../@types/discord-client';
 
 export default new class command_deposit implements bot_commands {
     name = 'deposit';
@@ -9,22 +12,21 @@ export default new class command_deposit implements bot_commands {
     permissions: permissions[] = ['SEND_MESSAGES', 'VIEW_CHANNEL', 'EMBED_LINKS'];
     category = __dirname.split(require('path').sep).pop();
     disable = true;
-    execute = async function (message: Discord.Message, args: string[]): Promise<void> {
+
+    async execute(message: Discord.Message, args: string[], _client: IClient, _guildDatabase: interfaceGuildModel, memberDatabase: interfaceUserModel): Promise<void> {
         if (!args.length) {
             message.channel.send('Debes poner una cantidad a depositar o all para depositar todo');
             return;
         }
-        const config = await user.findOne({ userID: message.author.id });
-        if (!config) return;
-        let efectivo = config.money.efectivo;
+        let efectivo = memberDatabase.money.efectivo;
         if (efectivo == 0) {
             message.channel.send('No tienes efectivo para depositar');
             return;
         }
         if (args[0] == 'all') {
-            let dineroActualizado = config.money.bank += efectivo;
-            config.money.efectivo = 0;
-            config.save();
+            let dineroActualizado = memberDatabase.money.bank += efectivo;
+            memberDatabase.money.efectivo = 0;
+            memberDatabase.save();
             message.channel.send(`Depositaste todos tus fondos a el banco ahora tienes ${dineroActualizado}\$ en tu banco`);
             return;
         }
@@ -37,9 +39,9 @@ export default new class command_deposit implements bot_commands {
             message.channel.send('No tienes fondos suficientes');
             return;
         }
-        config.money.efectivo -= dineroADepositar;
-        config.money.bank += dineroADepositar;
-        config.save();
+        memberDatabase.money.efectivo -= dineroADepositar;
+        memberDatabase.money.bank += dineroADepositar;
+        await memberDatabase.save();
         message.channel.send(`Depositaste ${dineroADepositar}\$ a tu banco`);
     };
 };

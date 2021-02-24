@@ -1,7 +1,8 @@
 import Discord, { Message } from "discord.js";
-import user from "../../../models/user";
+import interfaceUserModel from "../../../@types/mongo/user-model";
+import userModel from "../../../models/user";
 
-export default async function show(message: Message) {
+export default async function show(message: Message, memberDatabase: interfaceUserModel) {
     const embedShopShow = new Discord.MessageEmbed()
         .setColor('RANDOM');
     let usuMencion = message.mentions.users.first() || message.author;
@@ -9,14 +10,15 @@ export default async function show(message: Message) {
         message.channel.send('Los bots no pueden tener una tienda :(');
         return;
     }
-    const dbUsu = await user.findOne({ userID: usuMencion.id });
-
-
-    if (!dbUsu) {
-        message.channel.send(`hmm al parecer el no existe en mi base de datos`);
-        return;
+    if (message.mentions.users.first()) {
+        var database = await userModel.findOne({ userID: usuMencion.id });
+        if (!database) {
+            message.channel.send('hmm no tengo datos de el ususario');
+            return;
+        }
+        memberDatabase = database;
     }
-    let usuMencionShop = dbUsu.inventory.shop.productos;
+    let usuMencionShop = memberDatabase.inventory.shop.productos;
     if (!usuMencionShop.length) {
         embedShopShow.setTitle(`Tienda de ${usuMencion.tag}`);
         embedShopShow.setDescription(`El usuario ${usuMencion} no tiene ningun objeto a la venta`);

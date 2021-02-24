@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import IGuild, { guildInfo } from "../@types/mongo/guild-model";
+import IGuild from "../@types/mongo/guild-model";
 import config from "../config";
 
 const guildSchema = new Schema({
@@ -15,6 +15,8 @@ const guildSchema = new Schema({
         },
         welcome: {
             img: String,
+            imgMessage: String,
+            sendImage: Boolean,
             channel: String,
             message: String,
         }

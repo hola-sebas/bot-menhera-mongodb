@@ -2,6 +2,7 @@ import guild from '../../models/guild';
 import { bot_commands, permissions } from "../../@types/bot-commands";
 import IClient from "../../@types/discord-client";
 import discord from "discord.js";
+import interfaceGuildModel from '../../@types/mongo/guild-model';
 
 
 export default new class command_enable implements bot_commands {
@@ -14,11 +15,9 @@ export default new class command_enable implements bot_commands {
     disable = false;
     cooldown = 5;
 
-    execute = async function (message: discord.Message, args: string[], client: IClient): Promise<void> {
-        let config = await guild.findOne({ guildID: message.guild?.id });
-        if (!config) return;
-        let comandos = config.config.disabledCommands;
-        let categorias = config.config.disabledCategories;
+    async execute(message: discord.Message, args: string[], client: IClient, guildDatabase: interfaceGuildModel): Promise<void> {
+        let comandos = guildDatabase.config.disabledCommands;
+        let categorias = guildDatabase.config.disabledCategories;
         let opcion = args[0];
         let argumentos = args[1];
 
@@ -32,9 +31,9 @@ export default new class command_enable implements bot_commands {
                 return;
             }
             if (categorias.includes(argumentos)) {
-                let indexcategoria = config.config.disabledCategories.findIndex(i => i == argumentos);
-                config.config.disabledCategories.splice(indexcategoria);
-                config.save();
+                let indexcategoria = guildDatabase.config.disabledCategories.findIndex(i => i == argumentos);
+                guildDatabase.config.disabledCategories.splice(indexcategoria);
+                await guildDatabase.save();
                 message.channel.send(`Ok habilite la categoria ${argumentos}`);
                 return;
             } else {
@@ -54,9 +53,9 @@ export default new class command_enable implements bot_commands {
                 return;
             }
             if (comandos.includes(command.name)) {
-                let indexcomand = config.config.disabledCommands.findIndex(i => i == command.name);
-                config.config.disabledCommands.splice(indexcomand);
-                config.save();
+                let indexcomand = guildDatabase.config.disabledCommands.findIndex(i => i == command.name);
+                guildDatabase.config.disabledCommands.splice(indexcomand);
+                await guildDatabase.save();
                 message.channel.send(`Ok habilite el comando ${argumentos}`);
                 return;
             } else {

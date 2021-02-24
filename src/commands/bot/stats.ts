@@ -15,7 +15,7 @@ export default new class command_stats implements bot_commands {
     permissions: permissions[] = ['SEND_MESSAGES', 'VIEW_CHANNEL', 'EMBED_LINKS'];
     category = __dirname.split(require('path').sep).pop();
     disable = true;
-    execute = function (message: Discord.Message, args: string[], client: IClient, prefix: string): void {
+    execute = function (message: Discord.Message, args: string[], client: IClient): void {
         let dueño = client.users.cache.find(u => u.id === "355824156127920148");
         if (!dueño) {
             message.channel.send("hmm hay algo raro por aqui, no logro encontrar mi dueño T-T");

@@ -1,7 +1,6 @@
 import { GuildMember } from "discord.js";
 import IClient from "../@types/discord-client";
 import guild from '../models/guild';
-import Discord from "discord.js";
 
 export default new class event_guildMemberAdd {
     name = 'guildMemberAdd';
