@@ -1,41 +1,88 @@
 import { Schema, model } from 'mongoose';
-import IGuild from "../@types/mongo/guild-model";
-import config from "../config";
+import IGuild, { guildInfo } from "../@types/mongo/guild-model";
 
 const guildSchema = new Schema({
     guildID: {
         type: String,
         unique: true
     },
+    config: {
+        customCommands: Array,
+        prefix: String,
+        disabledCommands: Array,
+        disabledCategories: Array,
+        music: {
+            DJChannels: Array,
+            DJRoles: Array
+        }
+    },
     messages: {
         autoReply: Boolean,
-        goodbye: {
-            channel: String,
-            message: String
-        },
+        rankNotificationChannel: String,
         welcome: {
             img: String,
             imgMessage: String,
             sendImage: Boolean,
-            channel: String,
             message: String,
+            channel: String
+        },
+        goodbye: {
+            message: String,
+            channel: String
         }
     },
-    config: {
-        prefix: {
-            type: String,
-            default: config.prefix
-        },
-        customCommands: Array,
-        disabledCategories: Array,
-        disabledCommands: Array,
-        moderation: {
-            logChannel: String,
-            logEvents: Array
-        },
-        music: {
-            DJChannels: Array,
-            DJRoles: Array
+    moderation: {
+        logChannel: String,
+        logEvents: Array,
+        ignoreBots: Boolean,
+        autoAcctions: Array,
+        autoMod: {
+            inappropriateWords: {
+                ignnoredChannels: Array,
+                ignnoredRoles: Array,
+                action: String,
+                inappropriateWordsList: Array
+            },
+            invitationExternalGuilds: {
+                ignnoredChannels: Array,
+                ignnoredRoles: Array,
+                action: String
+            },
+            externalLinks: {
+                ignnoredChannels: Array,
+                ignnoredRoles: Array,
+                action: String,
+                discrodLinks: Boolean,
+                allowedDomains: Array
+            },
+            tooManyCaps: {
+                ignnoredChannels: Array,
+                ignnoredRoles: Array,
+                action: String
+            },
+            tooManyEmojis: {
+                ignnoredChannels: Array,
+                ignnoredRoles: Array,
+                action: String,
+                emojiLimit: Number
+            },
+            tooManySpoiler: {
+                ignnoredChannels: Array,
+                ignnoredRoles: Array,
+                action: String,
+                spoilerLimit: Number
+            },
+            tooManyMentions: {
+                ignnoredChannels: Array,
+                ignnoredRoles: Array,
+                action: String,
+                mentionsLimit: Number
+            },
+            zalgo: {
+                ignnoredChannels: Array,
+                ignnoredRoles: Array,
+                action: String
+            }
         }
     }
 });
