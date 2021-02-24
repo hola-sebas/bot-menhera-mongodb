@@ -1,14 +1,13 @@
 import Discord, { Message } from 'discord.js';
 import IClient from '../../@types/discord-client';
-
-import configJSON from '../../config';
-import guild from '../../models/guild';
+import interfaceGuildModel from '../../@types/mongo/guild-model';
+import config from '../../config';
 
 const enfriamiento = new Discord.Collection<string, boolean>();
 
 export default new class module_mencion {
     cooldown: number = 10000;
-    run = async (message: Message, client: IClient) => {
+    run = async (message: Message, client: IClient , guildDatabase: interfaceGuildModel) => {
         var regexp: RegExp = new RegExp(`^<@${client.user.id}>$`);
         if (regexp.test(message.content)) return;
 
@@ -18,9 +17,7 @@ export default new class module_mencion {
             enfriamiento.delete(message.author.id);
         }, this.cooldown);
 
-        let config = await guild.findOne({ guildId: message.guild?.id });
-        if (!config) return;
-        let prefix = config.configuracion.prefix || configJSON.prefix;
+        let prefix = guildDatabase.config.prefix || config.prefix;
 
         // si se menciona el bot responde con su prefijo
 

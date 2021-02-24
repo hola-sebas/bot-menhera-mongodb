@@ -2,7 +2,7 @@ import { model, Schema } from 'mongoose';
 import IUsers from "../@types/mongo/user-model";
 
 const userSchema = new Schema({
-    userId: {
+    userID: {
         type: String,
         required: true,
         unique: true
@@ -10,6 +10,12 @@ const userSchema = new Schema({
     money: {
         efectivo: Number,
         bank: Number
+    },
+    behavior: {
+        score: Number,
+        lastServerBanned: String,
+        lastServerMuted: String,
+        lastServerKicked: String
     },
     xp: {
         actual: Number,

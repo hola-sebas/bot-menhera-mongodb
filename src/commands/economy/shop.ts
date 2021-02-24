@@ -1,6 +1,8 @@
 import Discord from 'discord.js';
 import { bot_commands, permissions } from '../../@types/bot-commands';
 import IClient from '../../@types/discord-client';
+import interfaceGuildModel from '../../@types/mongo/guild-model';
+import interfaceUserModel from '../../@types/mongo/user-model';
 import buy from "./shop-functions/buy";
 import cancel from "./shop-functions/cancel";
 import { open, close, info } from "./shop-functions/open-close-info";
@@ -15,7 +17,7 @@ export default new class command_shop implements bot_commands {
     category = __dirname.split(require('path').sep).pop();
     disable = true;
 
-    execute = async function (message: Discord.Message, args: string[], client: IClient): Promise<void> {
+    execute(message: Discord.Message, args: string[], client: IClient, _guildDatabase: interfaceGuildModel, memberDatabase: interfaceUserModel): void {
         const accion = args[0];
         if (!accion) {
             message.channel.send('Debes especificar una accion para realizar asi \`buy\` \`shell\` \`show\` \`cancel\` \`open\` \`close\` \`info\`');
@@ -23,25 +25,25 @@ export default new class command_shop implements bot_commands {
         }
         switch (accion) {
             case 'buy':
-                buy(message, args, client);
+                buy(message, args, client, memberDatabase);
                 break;
             case 'shell':
-                shell(message, args);
+                shell(message, args, memberDatabase);
                 break;
             case 'show':
-                show(message);
+                show(message, memberDatabase);
                 break;
             case 'cancel':
-                cancel(message, args);
+                cancel(message, args, memberDatabase);
                 break;
             case 'open':
-                open(message);
+                open(message, memberDatabase);
                 break;
             case 'close':
-                close(message);
+                close(message, memberDatabase);
                 break;
             case 'info':
-                info(message);
+                info(message, memberDatabase);
                 break;
             default:
                 message.channel.send('Esa accion no existe\nDebes especificar una accion para realizar asi \`buy\` \`shell\` \`show\` \`cancel\` \`open\` \`close\` \`info\`');

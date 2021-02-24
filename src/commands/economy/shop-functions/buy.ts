@@ -1,8 +1,9 @@
 import { Message } from "discord.js";
 import IClient from "../../../@types/discord-client";
+import interfaceUserModel from "../../../@types/mongo/user-model";
 import user from "../../../models/user";
 
-export default async function buy(message: Message, args: string[], client: IClient) {
+export default async function buy(message: Message, args: string[], client: IClient, memberDatabase: interfaceUserModel) {
     const buyUsuMencion = message.mentions.users.first();
     if (!buyUsuMencion) {
         message.channel.send('Debes mencionar a un usuario para comprarle');
@@ -16,7 +17,7 @@ export default async function buy(message: Message, args: string[], client: ICli
         message.channel.send('No tengo tiempo para abrir una tienda');
         return;
     };
-    const buyDbMencion = await user.findOne({ userId: buyUsuMencion.id });
+    const buyDbMencion = await user.findOne({ userID: buyUsuMencion.id });
     if (!buyDbMencion) {
         message.channel.send('hmm no tengo datos de este usuario');
         return;
@@ -41,34 +42,32 @@ export default async function buy(message: Message, args: string[], client: ICli
 
     if (!buyProducto) return;
 
-    const buyDbAuthor = await user.findOne({ userId: message.author.id });
-    if (!buyDbAuthor) return;
-    let buyMoneyAuthor = buyDbAuthor.money.efectivo;
+    let buyMoneyAuthor = memberDatabase.money.efectivo;
     if (buyProducto.price > buyMoneyAuthor) {
         message.channel.send('No tienes el dinero en efectivo suficiente para comprar ese producto');
         return;
     };
-    buyDbAuthor.money.efectivo -= buyProducto.price;
+    memberDatabase.money.efectivo -= buyProducto.price;
     buyDbMencion.money.bank += buyProducto.price;
-    let buyIndexBagAuthor = buyDbAuthor.inventory.bag.findIndex(item => item.item == buyProductoAComprar);
+    let buyIndexBagAuthor = memberDatabase.inventory.bag.findIndex(item => item.item == buyProductoAComprar);
 
-    let buyBagItemAuthor = buyDbAuthor.inventory.bag.map(item => {
+    let buyBagItemAuthor = memberDatabase.inventory.bag.map(item => {
         if (item.item == buyProductoAComprar) return item;
     }).filter(Boolean)[0];
     if (!buyBagItemAuthor) return;
     if (buyIndexBagAuthor == -1) {
-        buyDbAuthor.inventory.bag.push({ item: buyProductoAComprar, cantidad: 1 });
+        memberDatabase.inventory.bag.push({ item: buyProductoAComprar, cantidad: 1 });
     } else {
-        buyDbAuthor.inventory.bag.splice(buyIndexBagAuthor, 1, { item: buyBagItemAuthor.item, cantidad: buyBagItemAuthor.cantidad + 1 });
+        memberDatabase.inventory.bag.splice(buyIndexBagAuthor, 1, { item: buyBagItemAuthor.item, cantidad: buyBagItemAuthor.cantidad + 1 });
     };
     buyDbMencion.inventory.shop.productos.splice(buyIndexShop, 1);
     buyDbMencion.inventory.shop.ventas.usuario = `${message.author.tag}(${message.author.id})`;
     buyDbMencion.inventory.shop.ventas.producto = buyProductoAComprar;
     buyDbMencion.inventory.shop.ventas.fecha = new Date();
-    buyDbAuthor.inventory.shop.compras.producto = buyProductoAComprar;
-    buyDbAuthor.inventory.shop.compras.usuario = `${buyUsuMencion.tag}(${buyUsuMencion.id})`;
-    buyDbAuthor.inventory.shop.compras.fecha = new Date();
+    memberDatabase.inventory.shop.compras.producto = buyProductoAComprar;
+    memberDatabase.inventory.shop.compras.usuario = `${buyUsuMencion.tag}(${buyUsuMencion.id})`;
+    memberDatabase.inventory.shop.compras.fecha = new Date();
     message.channel.send(`Compraste ${buyProductoAComprar} por un precio de ${buyProducto.price}\$`);
-    buyDbAuthor.save();
-    buyDbMencion.save();
+    await memberDatabase.save();
+    await buyDbMencion.save();
 }

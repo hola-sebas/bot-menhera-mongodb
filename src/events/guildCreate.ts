@@ -7,7 +7,7 @@ export default new class event_guildCreate {
     name = 'guildCreate';
 
     run = async function (client: IClient, guild: Guild): Promise<void> {
-        await guildDB({ guild }, client);
+        await guildDB(guild.id);
         console.log('\nNew Server!!!');
         var tabla = new ascii().setHeading('Nombre', 'ID', 'Usuarios', 'Roles', 'Canales');
         var numUsu = guild.members.cache.size;

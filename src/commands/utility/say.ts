@@ -1,6 +1,7 @@
 import Discord, { Message } from 'discord.js';
 import { bot_commands, permissions } from '../../@types/bot-commands';
 import IClient from '../../@types/discord-client';
+import interfaceGuildModel from '../../@types/mongo/guild-model';
 
 export default new class command_say implements bot_commands {
     name = 'say';
@@ -11,7 +12,7 @@ export default new class command_say implements bot_commands {
     category = __dirname.split(require('path').sep).pop();
     disable = true;
 
-    execute = function (message: Message, args: string[], client: IClient, prefix: string): void {
+    execute = function (message: Message, args: string[], client: IClient, guildDatabase: interfaceGuildModel): void {
         let canal = message.mentions.channels.first();
         if (!canal) {
             let mensaje = args.slice(0).join(" ");
@@ -24,7 +25,7 @@ export default new class command_say implements bot_commands {
         }
         let noMencion = args[0];
         if (noMencion.indexOf('<') == -1 && noMencion.indexOf('>') == -1 && noMencion.indexOf('#') == -1) {
-            message.channel.send(`Debes poner el canal al principio!\nEjemplo: \`${prefix}say #canal hola\``)
+            message.channel.send(`Debes poner el canal al principio!\nEjemplo: \`${guildDatabase.config.prefix}say #canal hola\``)
                 .then(m => m.delete({ timeout: 10000 }));
             return;
         }

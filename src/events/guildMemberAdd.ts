@@ -1,17 +1,16 @@
 import { GuildMember } from "discord.js";
 import IClient from "../@types/discord-client";
 import guild from '../models/guild';
-import Discord from "discord.js";
 
 export default new class event_guildMemberAdd {
     name = 'guildMemberAdd';
     run = async function (client: IClient, member: GuildMember): Promise<void> {
-        let config = await guild.findOne({ guildId: member.guild.id });
+        let config = await guild.findOne({ guildID: member.guild.id });
         if (!config) return;
-        let buscar = config.mensajes.welcome.channel;
+        let buscar = config.messages.welcome.channel;
         if (buscar == "0") return;
-        let img = config.mensajes.welcome.img;
-        let msg = config.mensajes.welcome.message;
+        let img = config.messages.welcome.img;
+        let msg = config.messages.welcome.message;
         let regex = /@{member}/g;
         let regex1 = /{member}/g;
         if (regex.test(msg)) {

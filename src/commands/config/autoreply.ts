@@ -1,6 +1,8 @@
 import { bot_commands, permissions } from '../../@types/bot-commands';
 import guild from '../../models/guild';
 import Discord from "discord.js";
+import IClient from '../../@types/discord-client';
+import interfaceGuildModel from '../../@types/mongo/guild-model';
 
 export default new class command_autoreply implements bot_commands {
     name = 'autoreply';
@@ -13,17 +15,15 @@ export default new class command_autoreply implements bot_commands {
     disable = false;
     cooldown = 5;
 
-    execute = async function (message: Discord.Message, args: string[]): Promise<void> {
-        let config = await guild.findOne({ guildId: message.guild?.id });
-        if (!config) return;
-        let activado = config.mensajes.autoReply;
+    async execute(message: Discord.Message, _args: string[], _client: IClient, guildDatabase: interfaceGuildModel): Promise<void> {
+        let activado = guildDatabase.messages.autoReply;
         if (activado == undefined || activado == true) {
-            config.mensajes.autoReply = false;
-            config.save();
+            guildDatabase.messages.autoReply = false;
+            await guildDatabase.save();
             message.channel.send('Ok **Desactive** la respuesta automatica a mensajes');
         } else if (activado == false) {
-            config.mensajes.autoReply = true;
-            config.save();
+            guildDatabase.messages.autoReply = true;
+            await guildDatabase.save();
             message.channel.send('Ok **Active** la respuesta automatica a mensajes');
         };
     };

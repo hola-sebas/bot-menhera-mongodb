@@ -1,5 +1,7 @@
 import Discord from "discord.js";
 import { bot_commands, permissions } from "../../@types/bot-commands";
+import IClient from "../../@types/discord-client";
+import interfaceGuildModel from "../../@types/mongo/guild-model";
 import guild from '../../models/guild';
 
 export default new class command_welcome implements bot_commands {
@@ -10,7 +12,8 @@ export default new class command_welcome implements bot_commands {
     authorPermissions: permissions[] = ["ADMINISTRATOR", "MANAGE_CHANNELS"];
     category = __dirname.split(require('path').sep).pop();
     disable = false;
-    execute = async function (message: Discord.Message, args: string[]): Promise<void> {
+
+    async execute(message: Discord.Message, args: string[], _client: IClient, guildDatabase: interfaceGuildModel): Promise<void> {
         if (!message.member?.permissions.has('ADMINISTRATOR')) {
             message.channel.send('No tienes permisos para ejecutar este comando');
             return;
@@ -19,8 +22,6 @@ export default new class command_welcome implements bot_commands {
             message.channel.send('Debes especificar una accion a realizar asi <card / channel / message>');
             return;
         };
-        const config = await guild.findOne({ guildId: message.guild?.id });
-        if (!config) return;
         switch (args[0]) {
             case 'card':
                 let linkURL = args[1];
@@ -39,8 +40,8 @@ export default new class command_welcome implements bot_commands {
                 try {
                     let img = await render.run(message.author, linkURL || linkAttachment);
                     message.channel.stopTyping(true);
-                    config.mensajes.welcome.img = linkURL || linkAttachment;
-                    config.save();
+                    guildDatabase.messages.welcome.img = linkURL || linkAttachment;
+                    await guildDatabase.save();
                     message.channel.send('Ok este seria un ejemplo de tu tarjeta de bienvenida', { files: [img] });
                 } catch (err) {
                     message.channel.stopTyping(true);
@@ -52,13 +53,13 @@ export default new class command_welcome implements bot_commands {
             case 'chnl':
             case 'channel':
                 if (args[1] == 'del') {
-                    let ok = config.mensajes.welcome.channel;
+                    let ok = guildDatabase.messages.welcome.channel;
                     if (ok == "0") {
                         message.channel.send('El canal de bienvenidas ya esta desabilitado');
                         return;
                     }
-                    config.mensajes.welcome.channel = '0';
-                    config.save();
+                    guildDatabase.messages.welcome.channel = '0';
+                    await guildDatabase.save();
                     message.channel.send('Ok desabilite el canal de bienvenidas');
                     return;
                 }
@@ -71,8 +72,8 @@ export default new class command_welcome implements bot_commands {
                     message.channel.send('No tengo permisos en ese canal');
                     return;
                 }
-                config.mensajes.welcome.channel = canal.id;
-                config.save();
+                guildDatabase.messages.welcome.channel = canal.id;
+                await guildDatabase.save();
                 message.channel.send(`Ok ahora el canal de bienvenidas es <#${canal.id}>`);
                 break;
 
@@ -84,13 +85,13 @@ export default new class command_welcome implements bot_commands {
                     return;
                 }
                 if (mensaje == 'del') {
-                    config.mensajes.welcome.message = 'Bienvenido al server!';
-                    config.save();
+                    guildDatabase.messages.welcome.message = 'Bienvenido al server!';
+                    await guildDatabase.save();
                     message.channel.send('Ok reestablecí el mansaje de bienvenida a \nBienvenido al server!');
                     return;
                 }
-                config.mensajes.welcome.message = mensaje;
-                config.save();
+                guildDatabase.messages.welcome.message = mensaje;
+                await guildDatabase.save();
                 let regex = /@{member}/g;
                 let regex1 = /{member}/g;
                 if (regex.test(mensaje)) {

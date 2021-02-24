@@ -1,8 +1,10 @@
 import render from '../../modules/images/rank';
 import regex from 'hex-color-regex';
-import userdb from '../../models/user';
 import discord from "discord.js";
 import { bot_commands, permissions } from '../../@types/bot-commands';
+import interfaceGuildModel from '../../@types/mongo/guild-model';
+import interfaceUserModel from '../../@types/mongo/user-model';
+import IClient from '../../@types/discord-client';
 
 export default new class command_xpcard implements bot_commands {
     name = 'xpcard';
@@ -13,29 +15,26 @@ export default new class command_xpcard implements bot_commands {
     disable = false;
     cooldown = 10;
 
-    execute = async function (message: discord.Message, args: string[]): Promise<void> {
+    async execute(message: discord.Message, args: string[], _client: IClient, _guildDatabase: interfaceGuildModel, memberDatabase: interfaceUserModel): Promise<void> {
         let url = args[0];
         let argsColor = args[1] || '#cd5c5c';
         if (!url) {
             message.channel.send('Debes poner el link de la imagen que quieres de fondo');
             return;
         }
-        let user = message.author;
-        let config = await userdb.findOne({ userId: user.id });
-        if (!config) return;
-        let color = config.xp.color;
-        let level = config.xp.nivel;
-        let currentXP = config.xp.actual;
-        let needXP = config.xp.necesario;
+        let color = memberDatabase.xp.color;
+        let level = memberDatabase.xp.nivel;
+        let currentXP = memberDatabase.xp.actual;
+        let needXP = memberDatabase.xp.necesario;
         try {
             if (regex().test(argsColor)) {
-                config.xp.color = argsColor;
-                color = config.xp.color;
+                memberDatabase.xp.color = argsColor;
+                color = memberDatabase.xp.color;
             }
-            let img = await render.run(user, color, level.toString(), currentXP, needXP, url);
+            let img = await render.run(message.author, color, level.toString(), currentXP, needXP, url);
             message.channel.send('Ok este seria un ejemplo de tu tarjeta de xp', { files: [img] });
-            config.xp.url = url;
-            config.save();
+            memberDatabase.xp.url = url;
+            await memberDatabase.save();
 
         } catch (err) {
             message.channel.send(err.toString());

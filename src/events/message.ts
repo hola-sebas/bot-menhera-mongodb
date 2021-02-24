@@ -29,21 +29,17 @@ export default new class event_message {
         let prefix = configJSON.prefix;
 
         //ejecucion de modulos
-        await module_GuildDB(message, client);
-        await module_MemberDB(message, client);
+        var guildDatabase = await module_GuildDB(message.guild.id);
+        var memberDatabase = await module_MemberDB(message.guild.id);
 
         await module_AutoURL.run(message);
-        await module_autoReply.run(message);
-        await module_memberXP.run(message);
-        await module_mencion.run(message, client);
+        await module_autoReply.run(message, guildDatabase);
+        await module_memberXP.run(message, memberDatabase, guildDatabase);
+        await module_mencion.run(message, client, guildDatabase);
         //fin de ejecucion de modulos
 
         // verificar el registro de la base de datos
-        let usuario = await userDB.findOne({ userId: message.author.id });
-        if (!usuario) return;
-        let configuracion = await guild.findOne({ guildId: message.guild.id });
-        if (!configuracion) return;
-        prefix = configuracion.configuracion.prefix;
+        prefix = guildDatabase.config.prefix;
 
         if (!message.content.startsWith(prefix)) return;
         // fin de la verificacion
@@ -62,13 +58,17 @@ export default new class event_message {
         const args = message.content.slice(prefix.length).trim().split(" ");
         const commandName = args.shift()?.toLowerCase() || "";
 
-        let disabled_commands = configuracion.configuracion.comandosDesactivados;
-        let disabled_categories = configuracion.configuracion.categoriasDesactivadas;
+        let disabled_commands = guildDatabase.config.disabledCommands;
+        let disabled_categories = guildDatabase.config.disabledCategories;
 
         const command = client.commands.get(commandName)
             || client.commands.find((cmd) => cmd.aliases?.includes(commandName) || false);
 
         if (!command) return;
+        if (command.mantenceMode) {
+            message.channel.send("este comando esta desactivado por motivos de mantenimiento por favor vuelve a intentarlo mas tarde");
+            return;
+        }
 
         if (disabled_categories.includes(command.category || "")) {
             if (process.env.NODE_ENV != "production") message.channel.send(`La categoria ${command.category} esta desactivada`);
@@ -131,7 +131,7 @@ export default new class event_message {
             if (process.env.NODE_ENV != "production")
                 console.log(sh.yellow(`Ejecutando el comando ${command.name} en ${message.guild.name}`));
 
-            await command.execute(message, args, client, prefix);
+            await command.execute(message, args, client, guildDatabase, memberDatabase);
         } catch (err) {
 
             console.error("There was an error during the command execution the error will be shown below: \n", err);
@@ -154,6 +154,5 @@ export default new class event_message {
             message.channel.send(embed_error).then(m => m.delete({ timeout: 10000 })).catch(err => err);
         }
         //fin de ejecucion de comandos
-
     };
 };

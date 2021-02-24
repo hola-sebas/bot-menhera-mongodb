@@ -1,6 +1,8 @@
 import { Message } from 'discord.js';
 import { bot_commands, permissions } from '../../@types/bot-commands';
-import user from '../../models/user';
+import IClient from '../../@types/discord-client';
+import interfaceGuildModel from '../../@types/mongo/guild-model';
+import interfaceUserModel from '../../@types/mongo/user-model';
 
 export default new class command_withdraw implements bot_commands {
     name = 'withdraw';
@@ -10,22 +12,20 @@ export default new class command_withdraw implements bot_commands {
     category = __dirname.split(require('path').sep).pop();
     disable = true;
 
-    execute = async function (message: Message, args: string[]): Promise<void> {
+    async execute(message: Message, args: string[], _client: IClient, _guildDatabase: interfaceGuildModel, memberDatabase: interfaceUserModel): Promise<void> {
         if (!args[0]) {
             message.channel.send('Debes colocar un numero o all');
             return;
         }
-        const config = await user.findOne({ userId: message.author.id });
-        if (!config) return;
-        let moneyBanco = config.money.bank;
+        let moneyBanco = memberDatabase.money.bank;
         if (moneyBanco == 0) {
             message.channel.send('No tienes dinero en el banco');
             return;
         }
         if (args[0] == 'all') {
-            config.money.bank = 0;
-            config.money.efectivo += moneyBanco;
-            config.save();
+            memberDatabase.money.bank = 0;
+            memberDatabase.money.efectivo += moneyBanco;
+            memberDatabase.save();
             message.channel.send(`Sacaste ${moneyBanco}\$ de tu banco`);
             return;
         }
@@ -38,9 +38,9 @@ export default new class command_withdraw implements bot_commands {
             message.channel.send('No tienes ese dinero en el banco');
             return;
         }
-        config.money.bank -= moneySacar;
-        config.money.efectivo += moneySacar;
-        config.save();
+        memberDatabase.money.bank -= moneySacar;
+        memberDatabase.money.efectivo += moneySacar;
+        await memberDatabase.save();
         message.channel.send(`Sacaste ${moneySacar}\$ de tu banco`);
     };
 };

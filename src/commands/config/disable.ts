@@ -2,6 +2,7 @@ import guild from '../../models/guild';
 import { bot_commands, permissions } from "../../@types/bot-commands";
 import IClient from "../../@types/discord-client";
 import discord from "discord.js";
+import interfaceGuildModel from '../../@types/mongo/guild-model';
 
 export default new class command_disable implements bot_commands {
     name = 'disable';
@@ -13,10 +14,9 @@ export default new class command_disable implements bot_commands {
     category = __dirname.split(require('path').sep).pop();
     disable = false;
     cooldown = 5;
+    mantenceMode = true;
 
-    execute = async function (message: discord.Message, args: string[], client: IClient): Promise<void> {
-        let config = await guild.findOne({ guildId: message.guild?.id });
-        if (!config) return;
+    async execute(message: discord.Message, args: string[], client: IClient, guildDatabase: interfaceGuildModel): Promise<void> {
         switch (args[0]) {
             case '-co':
                 if (!args[1]) {
@@ -27,7 +27,7 @@ export default new class command_disable implements bot_commands {
                 const command = client.commands.get(comando)
                     || client.commands.find((cmd) => cmd.aliases?.includes(comando) || false);
                 if (!command) return;
-                let disables = config.configuracion.comandosDesactivados;
+                let disables = guildDatabase.config.disabledCommands;
 
                 if (disables.includes(command.name)) {
                     message.channel.send('El comando ya esta desactivado');
@@ -38,8 +38,8 @@ export default new class command_disable implements bot_commands {
                     return;
                 }
                 if (command) {
-                    config.configuracion.comandosDesactivados.push(command.name);
-                    config.save();
+                    guildDatabase.config.disabledCommands.push(command.name);
+                    await guildDatabase.save();
                     message.channel.send('Comando desactivado');
                     return;
                 }
@@ -53,7 +53,7 @@ export default new class command_disable implements bot_commands {
                 }
                 let categorias = client.categories;
                 let argumentos = args[1];
-                let ya = config.configuracion.categoriasDesactivadas;
+                let ya = guildDatabase.config.disabledCategories;
                 if (!categorias.has(argumentos)) {
                     message.channel.send('Esa categoria no existe');
                     return;
@@ -80,8 +80,8 @@ export default new class command_disable implements bot_commands {
                 }
 
                 if (categorias.has(argumentos)) {
-                    config.configuracion.categoriasDesactivadas.push(argumentos);
-                    config.save();
+                    guildDatabase.config.disabledCategories.push(argumentos);
+                    guildDatabase.save();
                     message.channel.send('Ok desabilite esa categoria');
                     return;
                 }

@@ -1,10 +1,11 @@
 import Discord, { Message } from 'discord.js';
+import interfaceGuildModel from '../../@types/mongo/guild-model';
 import guild from '../../models/guild';
 const enfriamiento: Discord.Collection<string, boolean> = new Discord.Collection();
 
 export default new class module_autoReply {
-    cooldown: number = 10000;
-    run = async (message: Message): Promise<void> => {
+    public cooldown: number = 10000;
+    public async run(message: Message, guildDatabase: interfaceGuildModel): Promise<void> {
         if (this.conditions(message.content.toLowerCase())) return;
         // respuestas automaticas
         if (enfriamiento.has(message.author.id)) return;
@@ -16,14 +17,10 @@ export default new class module_autoReply {
 
         if (!message.guild?.me?.permissionsIn(message.channel).has('SEND_MESSAGES')) return;
 
-        let mensaje = message.content.toLowerCase();
-
-        let config = await guild.findOne({ guildId: message.guild.id });
-        if (!config) return;
-        let activado = config.mensajes.autoReply;
+        let activado = guildDatabase.messages.autoReply;
         if (activado == false) return;
 
-        if (mensaje.startsWith('hola')) {
+        if (message.content.toLowerCase().startsWith('hola')) {
             var Saludos = [
                 "hola",
                 "hey",
@@ -33,7 +30,7 @@ export default new class module_autoReply {
             ];
             message.channel.send(Saludos[Math.floor(Math.random() * Saludos.length)]);
             return;
-        } else if (mensaje == 'f' || mensaje == 'efe' || mensaje == 'ef') {
+        } else if ((/^((e)?f(e)?)$/i).test(message.content)) {
             const embed_f = new Discord.MessageEmbed()
                 .setDescription(message.author.username + " ha mostrado sus respetos")
                 .setColor("RANDOM")
@@ -44,14 +41,6 @@ export default new class module_autoReply {
         //fin de las respuestas automaticas
     };
     private conditions(value: string): boolean {
-        if (value.startsWith("hola")) return true;
-        switch (value) {
-            case "f":
-            case "efe":
-            case "ef":
-                return true;
-            default:
-                return false;
-        }
+        return (/^((e)?f(e)?)$/i).test(value) || value.startsWith("hola");
     }
 };

@@ -1,8 +1,9 @@
-'use strict';
 import { categoryOptions } from './index';
-import user from '../../models/user';
 import Discord from "discord.js";
 import { bot_commands, permissions } from '../../@types/bot-commands';
+import interfaceGuildModel from '../../@types/mongo/guild-model';
+import interfaceUserModel from '../../@types/mongo/user-model';
+import IClient from '../../@types/discord-client';
 
 export default new class command_craft implements bot_commands {
     name = 'craft';
@@ -11,7 +12,8 @@ export default new class command_craft implements bot_commands {
     permissions: permissions[] = ['SEND_MESSAGES', 'VIEW_CHANNEL', 'MANAGE_MESSAGES'];
     category = __dirname.split(require('path').sep).pop();
     disable = true;
-    execute = async function (message: Discord.Message, args: string[]): Promise<void> {
+
+    async execute(message: Discord.Message, args: string[], _client: IClient, _guildDatabase: interfaceGuildModel, memberDatabase: interfaceUserModel): Promise<void> {
         let itemCraft = args.join(' ');
         if (!itemCraft) {
             message.channel.send('Debes poner un item a craftear, inventate uno!');
@@ -38,13 +40,11 @@ export default new class command_craft implements bot_commands {
                 }
             }
         });
-        if (await MatchMine(args[0])) {
+        if (MatchMine(args[0])) {
             message.channel.send('Estas tratando de crear un mineral que se debe conseguir minando');
             return;
         };
-        const config = await user.findOne({ userId: message.author.id });
-        if (!config) return;
-        let authorBag = config.inventory.bag;
+        let authorBag = memberDatabase.inventory.bag;
         if (materiales.length) {
             message.channel.send(`Materiales necesarios \`${materiales.join(', ')}\` \nReacciona a ✅ para craftearlo o ❌ para cancelar`).then(msg => {
                 msg.react('✅');
@@ -74,20 +74,20 @@ export default new class command_craft implements bot_commands {
                                 if (item.item == material) {
                                     let mapIndex = authorBag.findIndex(itemBag => itemBag.item == material);
                                     if (item.cantidad <= 1) {
-                                        config.inventory.bag.splice(mapIndex, 1);
+                                        memberDatabase.inventory.bag.splice(mapIndex, 1);
                                     } else {
-                                        config.inventory.bag.splice(mapIndex, 1, { item: authorBag[mapIndex].item, cantidad: authorBag[mapIndex].cantidad - 1 });
+                                        memberDatabase.inventory.bag.splice(mapIndex, 1, { item: authorBag[mapIndex].item, cantidad: authorBag[mapIndex].cantidad - 1 });
                                     }
                                 }
                             });
                         });
                         let indexBag = authorBag.findIndex(itemBag => itemBag.item == itemCraft);
                         if (indexBag == -1) {
-                            config.inventory.bag.push({ item: itemCraft, cantidad: 1 });
+                            memberDatabase.inventory.bag.push({ item: itemCraft, cantidad: 1 });
                         } else {
-                            config.inventory.bag.splice(indexBag, 1, { item: itemCraft, cantidad: authorBag[indexBag].cantidad + 1 });
+                            memberDatabase.inventory.bag.splice(indexBag, 1, { item: itemCraft, cantidad: authorBag[indexBag].cantidad + 1 });
                         }
-                        config.save();
+                        await memberDatabase.save();
                         msg.delete();
                         message.channel.send(`Haz crafteado ${itemCraft}`);
                     }
@@ -111,16 +111,16 @@ export default new class command_craft implements bot_commands {
                     const emoji = coleccion.first();
                     if (!emoji) return;
                     if (emoji.emoji.name == '✅') {
-                        let moneyAuthor = config.money.efectivo;
+                        let moneyAuthor = memberDatabase.money.efectivo;
                         if (itemCraft.length > moneyAuthor) return msg.delete(), message.channel.send(`No tienes ${itemCraft.length}\$ en efectivo`);
-                        config.money.efectivo -= itemCraft.length;
+                        memberDatabase.money.efectivo -= itemCraft.length;
                         let indexBag = authorBag.findIndex(itemBag => itemBag.item == itemCraft);
                         if (indexBag == -1) {
-                            config.inventory.bag.push({ item: itemCraft, cantidad: 1 });
+                            memberDatabase.inventory.bag.push({ item: itemCraft, cantidad: 1 });
                         } else {
-                            config.inventory.bag.splice(indexBag, 1, { item: itemCraft, cantidad: authorBag[indexBag].cantidad + 1 });
+                            memberDatabase.inventory.bag.splice(indexBag, 1, { item: itemCraft, cantidad: authorBag[indexBag].cantidad + 1 });
                         }
-                        config.save();
+                        await memberDatabase.save();
                         msg.delete();
                         message.channel.send(`Haz crafteado ${itemCraft}`);
                     }
@@ -137,9 +137,9 @@ export default new class command_craft implements bot_commands {
 /**
  * retorna true si encuntra alguna coincidencia 
  * undefined sin no la encuntra
- * @param {String} args string con la palabra a buscar
+ * @param craftitem string con la palabra a buscar
  */
-async function MatchMine(craftitem: string) {
+function MatchMine(craftitem: string) {
     let buscar: string[] = [];
     categoryOptions.minerales.map(i => buscar.push(i.toLowerCase()));
 

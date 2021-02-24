@@ -1,35 +1,34 @@
-import canvas from 'canvas';
+import canvas, { registerFont } from 'canvas';
 import { User } from 'discord.js';
+import path from "path";
 
 export default new class rankXpCardGenerator {
-    async run(user: User, colorD: string, level: string, currentXP: number, neededXP: number, background: string) {
-        let bg = background;
-        let color = colorD;
-        if (!color) color = '#cd5c5c';
-        if (!bg) bg = '././img/Wallpaper.png';
+    async run(user: User, color: string, level: string, currentXP: number, neededXP: number, bg: string): Promise<Buffer> {
+        registerFont(path.join(__dirname, "../../../sources/fonts/impact.ttf"), { family: "Custom Impact" });
+        registerFont(path.join(__dirname, "../../../sources/fonts/Helvetica.ttf"), { family: "Helvetica" });
         const lienzo = canvas.createCanvas(934, 282);
         const ctx = lienzo.getContext('2d');
         let opacity = 0.5;
-        let b = await canvas.loadImage(bg);
+        var LBackground = await canvas.loadImage(bg);
         let avatar = await canvas.loadImage(user.displayAvatarURL({ dynamic: false, size: 1024, format: "png" }));
         let temp = lienzo.width - 250;
-        //Fondo
+
         ctx.fillStyle = "#23272A";
         ctx.save();
         ctx.beginPath();
         roundRect(ctx, 0, 0, 934, 282, 5, true);
         ctx.closePath();
         ctx.clip();
-        ctx.drawImage(b, 0, 0, 934, 282);
+        ctx.drawImage(LBackground, 0, 0, 934, 282);
         ctx.restore();
-        //tras fondo
+
         ctx.save();
         ctx.fillStyle = "#090A0B";
-        if (b) ctx.globalAlpha = opacity;
+        if (LBackground) ctx.globalAlpha = opacity;
         else ctx.globalAlpha = 0.1 * 100 / 10;
         roundRect(ctx, 24, 36, 886, 210, 10, true);
         ctx.restore();
-        //fondo avatar
+
         ctx.save();
         ctx.beginPath();
         ctx.arc(122, 142, 84, 0, Math.PI * 2, true);
@@ -72,10 +71,9 @@ export default new class rankXpCardGenerator {
         ctx.fillRect(257 + 22, 147.5 + 36.25, widthXP, 35.9);
         ctx.arc(257 + 18.5 + widthXP, 147.5 + 18.5 + 36.25, 18, 0, Math.PI * 2, false);
         ctx.fill();
-        let us = user.username.length > 15 ? user.username.substring(0, 17) + "..." : user.username;
 
-        var name = us;
-        ctx.font = '40px Impact';
+        var name = user.username.length > 15 ? user.username.substring(0, 17) + "..." : user.username;
+        ctx.font = '40px Custom Impact';
         ctx.fillStyle = 'white';
         ctx.textAlign = "left";
         ctx.fillText(name, 260, 162);
@@ -83,38 +81,37 @@ export default new class rankXpCardGenerator {
         let left = ctx.measureText(name).width + 277;
 
         ctx.save();
-        ctx.font = '25px Impact';
+        ctx.font = '25px Helvetica';
         ctx.fillStyle = '#7F8384';
         ctx.textAlign = "left";
         ctx.fillText(`#${user.discriminator}`, left, 162);
         ctx.restore();
 
         ctx.save();
-        ctx.font = '25px Impact';
+        ctx.font = '25px Helvetica';
         ctx.fillStyle = 'white';
         ctx.textAlign = "left";
         ctx.fillText(`LEVEL:`, temp, 99);
         ctx.restore();
 
         ctx.save();
-        ctx.font = '45px Impact';
+        ctx.font = '45px Helvetica';
         ctx.fillStyle = 'white';
         ctx.textAlign = "left";
         ctx.fillText(level, temp + 87, 99);
         ctx.restore();
 
         let xp = currentXP;
-
         let need = `/ ${neededXP} XP`;
 
-        ctx.font = '25px Impact';
+        ctx.font = '25px Helvetica';
         ctx.fillStyle = 'white';
         ctx.textAlign = "left";
         ctx.fillText(xp.toString(), 707, 165);
 
         left = ctx.measureText(xp.toString()).width + 710;
 
-        ctx.font = '25px Impact';
+        ctx.font = '25px Helvetica';
         ctx.fillStyle = '#7F8384';
         ctx.textAlign = "left";
         ctx.fillText(need, left, 165);

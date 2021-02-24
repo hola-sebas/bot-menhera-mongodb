@@ -24,7 +24,7 @@ export function init(client: IClient): void {
 export var categoryOptions = {
     canDisable: true,
     name: __dirname.split(require('path').sep).pop(),
-    description: "Mucha, mucha musica :D"
+    description: "¡NUEVO! mucha, mucha musica :D"
 };
 
 
