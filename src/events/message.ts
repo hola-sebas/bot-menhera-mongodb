@@ -1,9 +1,7 @@
 import sh from 'chalk';
 import Discord, { Message } from 'discord.js';
 
-import userDB from '../models/user';
 import configJSON from '../config';
-import guild from '../models/guild';
 import IClient from '../@types/discord-client';
 import module_GuildDB from "../modules/GuildDatabase";
 import module_MemberDB from "../modules/MemberDatabase";
