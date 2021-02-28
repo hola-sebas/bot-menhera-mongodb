@@ -91,30 +91,20 @@ export default new class rankXpCardGenerator {
         ctx.font = '25px Helvetica';
         ctx.fillStyle = 'white';
         ctx.textAlign = "left";
-        ctx.fillText(`LEVEL:`, temp, 99);
+        ctx.fillText(`Nivel: ${level}`, temp, 99);
         ctx.restore();
-
-        ctx.save();
-        ctx.font = '45px Helvetica';
-        ctx.fillStyle = 'white';
-        ctx.textAlign = "left";
-        ctx.fillText(level, temp + 87, 99);
-        ctx.restore();
-
-        let xp = currentXP;
-        let need = `/ ${neededXP} XP`;
 
         ctx.font = '25px Helvetica';
         ctx.fillStyle = 'white';
         ctx.textAlign = "left";
-        ctx.fillText(xp.toString(), 707, 165);
+        ctx.fillText(currentXP.toString(), 707, 165);
 
-        left = ctx.measureText(xp.toString()).width + 710;
+        left = ctx.measureText(currentXP.toString()).width + 710;
 
         ctx.font = '25px Helvetica';
         ctx.fillStyle = '#7F8384';
         ctx.textAlign = "left";
-        ctx.fillText(need, left, 165);
+        ctx.fillText(`/${neededXP} XP`, left, 165);
 
         return lienzo.toBuffer();
     }
