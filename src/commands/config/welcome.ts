@@ -38,7 +38,7 @@ export default new class command_welcome implements bot_commands {
                 }
                 message.channel.startTyping();
                 try {
-                    let img = await renderCard.run(message.author, linkURL || linkAttachment, guildDatabase.messages.welcome.message);
+                    let img = await renderCard.run(message.author, linkURL || linkAttachment, guildDatabase.messages.welcome.imgMessage);
                     message.channel.stopTyping(true);
                     guildDatabase.messages.welcome.img = linkURL || linkAttachment;
                     await guildDatabase.save();

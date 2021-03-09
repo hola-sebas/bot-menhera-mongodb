@@ -1,6 +1,7 @@
 import { GuildMember } from "discord.js";
 import IClient from "../@types/discord-client";
 import guild from '../models/guild';
+import cardRender from "../modules/images/card";
 
 export default new class event_guildMemberAdd {
     name = 'guildMemberAdd';
@@ -21,15 +22,16 @@ export default new class event_guildMemberAdd {
         msg = msg.replace(/{guild}/g, member.guild.name);
         msg = msg.replace(/{membercount}/g, member.guild.memberCount.toString());
 
-        let canal: any = client.channels.cache.find(c => c.id == buscar);
+        let canal = client.channels.cache.find(c => c.id == buscar);
         if (!canal) return;
         if (!member.guild.me?.permissionsIn(canal).has(["SEND_MESSAGES", "EMBED_LINKS", "ATTACH_FILES"])) {
             let ownerGuild = member.guild.ownerID;
             client.users.cache.find(c => c.id == ownerGuild)?.send(`**ATENCION** no puedo enviar mensajes en el canal <#${canal.id}> revisa los permisos y reconfigura el canal de bienvenidas`);
             return;
         };
-        const render = require('../modules/images/card.js');
-        let imagen = await render.run(member.user, img).catch((err: any) => err);
-        canal.send(`${msg}`, { files: [imagen] }).catch((err: any) => err);
+        let imagen = await cardRender.run(member.user, img, config.messages.welcome.imgMessage).catch((err) => err);
+        if (canal.isText()){
+            canal.send(`${msg}`, { files: [imagen] }).catch((err) => err);
+        }
     };
 };
