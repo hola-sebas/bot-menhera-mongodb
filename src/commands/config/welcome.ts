@@ -3,6 +3,7 @@ import { bot_commands, permissions } from "../../@types/bot-commands";
 import IClient from "../../@types/discord-client";
 import interfaceGuildModel from "../../@types/mongo/guild-model";
 import guild from '../../models/guild';
+import renderCard from "../../modules/images/card";
 
 export default new class command_welcome implements bot_commands {
     name = 'welcome';
@@ -36,9 +37,8 @@ export default new class command_welcome implements bot_commands {
                     return;
                 }
                 message.channel.startTyping();
-                const render = require(`../../modules/images/card.js`);
                 try {
-                    let img = await render.run(message.author, linkURL || linkAttachment);
+                    let img = await renderCard.run(message.author, linkURL || linkAttachment, guildDatabase.messages.welcome.message);
                     message.channel.stopTyping(true);
                     guildDatabase.messages.welcome.img = linkURL || linkAttachment;
                     await guildDatabase.save();
