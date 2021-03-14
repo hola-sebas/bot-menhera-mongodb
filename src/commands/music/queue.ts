@@ -16,7 +16,11 @@ export default new class command_queue implements bot_commands {
         var queueInfo = musicManager.guilds.get(message.guild?.id || "");
         if (!queueInfo || !queueInfo.queue.length) {
             message.channel.send("No hay cola de reproduccion en este servidor");
-            return;
+            return false;
+        }
+        if (queueInfo.Text_Channel.id !== message.channel.id) {
+            message.channel.send(`Este comando esta desabilitado en este canal mientras haya cola de reproduccion en el servidor, por favor usalo en <#${queueInfo.Text_Channel.id}>`);
+            return false;
         }
         var page = args[0] ? parseInt(args[0]) : 0;
 
@@ -39,7 +43,7 @@ export default new class command_queue implements bot_commands {
                     value: value.description || "No description..."
                 };
             }))
-            .setFooter(`Pagina: ${page}`)
+            .setFooter(`Pagina: ${page} de ${queueArray.length}`)
             .setColor("RANDOM");
         message.channel.send(queueInfoEmbed);
     }

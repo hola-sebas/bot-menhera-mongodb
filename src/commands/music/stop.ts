@@ -16,6 +16,10 @@ export default new class command_resume implements bot_commands {
             message.channel.send("No hay cola de reproduccion en este servidor");
             return;
         }
+        if (queueInfo.Text_Channel.id !== message.channel.id) {
+            message.channel.send(`Este comando esta desabilitado en este canal mientras haya cola de reproduccion en el servidor, por favor usalo en <#${queueInfo.Text_Channel.id}>`);
+            return false;
+        }
         queueInfo.voice_connection?.disconnect();
     }
 };

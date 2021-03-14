@@ -1,6 +1,6 @@
 import { bot_commands, permissions } from "../../@types/bot-commands";
 import YTSearch, { YouTubeSearchOptions } from "youtube-search";
-import { Channel, Message, MessageEmbed, MessageReaction, User } from "discord.js";
+import { Message, MessageEmbed, MessageReaction, User } from "discord.js";
 import { decode as htmlDecode } from "html-entities";
 
 import config from "../../config";
@@ -25,12 +25,21 @@ export default new class command_search implements bot_commands {
     disable = true;
 
     async execute(message: Message, args: string[], client: IClient): Promise<any> {
+        var queueInfo = musicManager.guilds.get(message.guild?.id || "");
+        if (queueInfo && queueInfo.Text_Channel.id !== message.channel.id) {
+            message.channel.send(`Este comando esta desabilitado en este canal mientras haya cola de reproduccion en el servidor, por favor usalo en <#${queueInfo.Text_Channel.id}>`);
+            return false;
+        }
+        if (queueInfo && !queueInfo.Voice_Channel?.members.has(message.author.id)) {
+            message.channel.send("Debes de estar en el canal de voz en donde se esta reproduciendo la cancion actual");
+            return false;
+        }
         if (!message.member?.voice.channel) {
-            message.channel.send("debes unirte a un canal de voz para poder saber donde puedo reproducir el video");
+            message.channel.send("Debes unirte a un canal de voz para poder saber donde puedo reproducir el video");
             return false;
         }
         if (!args.length) {
-            message.channel.send("debes poner algo para buscar!");
+            message.channel.send("Debes poner algo para buscar!");
             return false;
         };
         var YTResults = await YTSearch(args.join(" "), YTopts);
@@ -47,9 +56,10 @@ export default new class command_search implements bot_commands {
                 YTResults.results[index].title = htmlDecode(YTResults.results[index].title, { level: "html5" });
                 return {
                     name: `${index}. ${result.title}`,
-                    value: result.description || "No description..."
+                    value: result.description || "No hay descripcion..."
                 };
-            })).setColor("RANDOM");
+            }))
+            .setColor("RANDOM");
         message.channel.send(YTResultsEmbed).then((msg) => {
             var emojisAray = ["0️⃣", "1️⃣",
                 "2️⃣", "3️⃣",
@@ -67,16 +77,20 @@ export default new class command_search implements bot_commands {
                 if (!collection) return;
                 var reaccion = collection.first();
                 if (!reaccion) return;
-                var emoji = reaccion.emoji.name;
-                var index = emojisAray.findIndex((value) => value == emoji);
-                var guildManager = musicManager.guilds.get(message.guild?.id || "");
-                if (!guildManager) {
+                var ReactionArrayIndex = emojisAray.findIndex((value) => value == reaccion?.emoji.name);
+                if (!queueInfo) {
                     var newQueueInfo = new Server_QueueInfo(message, client);
                     musicManager.guilds.set(message.guild?.id || "", newQueueInfo);
-                    newQueueInfo.play(YTResults.results[index]);
+                    newQueueInfo.play(YTResults.results[ReactionArrayIndex]);
                 } else {
-                    guildManager.play(YTResults.results[index]);
+                    queueInfo.play(YTResults.results[ReactionArrayIndex]);
                 }
+                var embedResults = new MessageEmbed()
+                    .addField(YTResults.results[ReactionArrayIndex].title,
+                        YTResults.results[ReactionArrayIndex].description || "No descripcion...")
+                    .setColor("RANDOM");
+                msg.edit(embedResults);
+                msg.reactions.removeAll().catch();
             }).catch(() => {
                 msg.edit(new MessageEmbed().setColor("RANDOM").setDescription("No seleccionaste una opcion"));
             });

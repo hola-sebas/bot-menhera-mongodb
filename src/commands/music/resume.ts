@@ -14,8 +14,12 @@ export default new class command_resume implements bot_commands {
     execute(message: Message) {
         var queueInfo = musicManager.guilds.get(message.guild?.id || "");
         if (!queueInfo) {
-            message.channel.send("No hay ninguna cancion en reproduccion");
+            message.channel.send("No hay canciones en reproduccion");
             return;
+        }
+        if (queueInfo.Text_Channel.id !== message.channel.id) {
+            message.channel.send(`Este comando esta desabilitado en este canal mientras haya cola de reproduccion en el servidor, por favor usalo en <#${queueInfo.Text_Channel.id}>`);
+            return false;
         }
         if (queueInfo.playing) {
             message.channel.send(`Ya se esta reproduciendo **${queueInfo.nowPlaying}**`);

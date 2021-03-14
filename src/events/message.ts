@@ -17,6 +17,7 @@ const cooldowns = new Discord.Collection<string, Discord.Collection<string, Date
 export default new class event_message {
     name = 'message';
     run = async function (client: IClient, message: Message): Promise<void> {
+        var eventInit = Date.now();
         if (!message.guild || message.author.bot) return;
         if (!message.guild.me?.permissionsIn(message.channel).has('SEND_MESSAGES')) {
             if (message.member?.permissions.has('ADMINISTRATOR')) {
@@ -126,12 +127,15 @@ export default new class event_message {
 
         //ejecucion de comandos
         try {
-            if (process.env.NODE_ENV != "production")
-                console.log(sh.yellow(`Ejecutando el comando ${command.name} en ${message.guild.name}`));
-
+            if (process.env.NODE_ENV != "production") {
+                console.log(sh.yellow(`Executing command ${command.name} on ${message.guild.name}`));
+            }
             if (await command.execute(message, args, client, guildDatabase, memberDatabase) == false) {
                 timestamps?.delete(message.author.id);
-            };
+            }
+            if (process.env.NODE_ENV != "production") {
+                console.log(sh.yellow(`Command executed ${command.name} on ${message.guild.name}, timing: ${Date.now() - eventInit} ms`));
+            }
         } catch (err) {
 
             console.error("There was an error during the command execution the error will be shown below: \n", err);

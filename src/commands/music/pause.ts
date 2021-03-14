@@ -16,6 +16,10 @@ export default new class command_pause implements bot_commands {
             message.channel.send("No hay ninguna cancion en reproduccion");
             return;
         }
+        if (queueInfo.Text_Channel.id !== message.channel.id) {
+            message.channel.send(`Este comando esta desabilitado en este canal mientras haya cola de reproduccion en el servidor, por favor usalo en <#${queueInfo.Text_Channel.id}>`);
+            return false;
+        }
         queueInfo.playing = false;
         queueInfo.dispatchConnection?.pause();
         message.channel.send(`He pausado la reproduccion de: ${queueInfo.nowPlaying}`);
