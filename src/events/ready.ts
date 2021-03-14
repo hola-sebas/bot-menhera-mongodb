@@ -1,5 +1,6 @@
 import IClient from "../@types/discord-client";
-import { PresenceData } from "discord.js";
+import presenceLoader from "../loaders/post-Ready/presence";
+import radioManager from "../loaders/post-Ready/radio-manager";
 
 export default new class event_ready {
   name = 'ready';
@@ -8,37 +9,9 @@ export default new class event_ready {
       console.error("The bot user is undefined!");
       process.exit();
     }
-
-    // ! bot presence
-    setInterval(() => {
-      client.user.setPresence({
-        activity: states[statesCount],
-        status: "online"
-      });
-      statesCount++;
-      if (statesCount > states.length) statesCount = 0;
-
-    }, 20000);
-    var statesCount = 0;
-    var states: PresenceData["activity"][] = [
-      {
-        name: "nueva pagina :D",
-        type: "STREAMING",
-        url: "https://menherachan.herokuapp.com",
-      },
-      {
-        name: `${client.users.cache.size} Usuarios`,
-        type: "WATCHING"
-      },
-      {
-        name: `${client.guilds.cache.size} Servidores`,
-        type: "WATCHING"
-      },
-      {
-        name: `${client.channels.cache.size} Canales`,
-        type: "WATCHING"
-      }
-    ];
+    // execution modules post-ready
+    await presenceLoader(client);
+    await radioManager.createBoardCast(client);
     console.log(`The bot ${client.user.username} is ready!`);
   };
 };

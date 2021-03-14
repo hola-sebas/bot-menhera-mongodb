@@ -8,9 +8,9 @@ import IClient from "./@types/discord-client";
 import { init as iniTnaiClient } from "./tnai-client";
 
 // scrips initializators
-import utils from "./loaders/processEvents";
-import commands from "./loaders/commands";
-import events from "./loaders/events";
+import utils from "./loaders/pre-Ready/processEvents";
+import commands from "./loaders/pre-Ready/commands";
+import events from "./loaders/pre-Ready/events";
 
 const client = <IClient>new Discord.Client({ ws: { intents: 32767 } });
 client.commands = new Discord.Collection();

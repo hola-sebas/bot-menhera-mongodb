@@ -1,12 +1,12 @@
-import ev_error from "../events/error";
-import ev_ready from "../events/ready";
-import ev_message from "../events/message";
-import ev_guildCreate from "../events/guildCreate";
-import ev_guildDelete from "../events/guildDelete";
-import ev_guildMemeberAdd from "../events/guildMemberAdd";
-import ev_guildMemberRemove from "../events/guildMemberRemove";
+import ev_error from "../../events/error";
+import ev_ready from "../../events/ready";
+import ev_message from "../../events/message";
+import ev_guildCreate from "../../events/guildCreate";
+import ev_guildDelete from "../../events/guildDelete";
+import ev_guildMemeberAdd from "../../events/guildMemberAdd";
+import ev_guildMemberRemove from "../../events/guildMemberRemove";
 
-import IClient from "../@types/discord-client";
+import IClient from "../../@types/discord-client";
 
 export default new class event_init {
     run = function (client: IClient): void {
