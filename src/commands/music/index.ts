@@ -8,6 +8,7 @@ import command_stop from "./stop";
 import command_pause from "./pause";
 import command_queue from "./queue";
 import command_resume from "./resume";
+import commadn_nowPlaying from "./now-playing";
 
 import IClient from "../../@types/discord-client";
 
@@ -18,6 +19,7 @@ export function init(client: IClient): void {
     client.commands.set(command_pause.name, command_pause);
     client.commands.set(command_queue.name, command_queue);
     client.commands.set(command_resume.name, command_resume);
+    client.commands.set(commadn_nowPlaying.name, commadn_nowPlaying);
     client.categories.set(categoryOptions.name, categoryOptions);
 };
 
@@ -26,7 +28,6 @@ export var categoryOptions = {
     name: __dirname.split(require('path').sep).pop(),
     description: "¡NUEVO! mucha, mucha musica :D"
 };
-
 
 // song manager
 export var musicManager = new class Music_Manager {
@@ -41,7 +42,7 @@ export class Server_QueueInfo {
 
     public volume: number = 100;
     public playing: boolean = false;
-    public nowPlaying?: string | null = null;
+    public nowPlaying?: YouTubeSearchResults | null = null;
     public queue: YouTubeSearchResults[] = [];
     public voice_connection?: VoiceConnection | null = null;
     public dispatchConnection?: StreamDispatcher | null = null;
@@ -60,12 +61,12 @@ export class Server_QueueInfo {
         }
         if (this.nowPlaying || this.queue.length) {
             this.queue.push(result);
-            this.Text_Channel.send(`Cancion (${result.title}) añadida a la cola!`);
+            this.Text_Channel.send(`Cancion (**${result.title}**) añadida a la cola!`);
             return;
         }
         this.dispatchConnection = this.voice_connection?.play(ytdl(result.link));
         this.playing = true;
-        this.nowPlaying = result.title;
+        this.nowPlaying = result;
         this.dipatchConnectionLiteners();
     }
 
@@ -106,9 +107,9 @@ export class Server_QueueInfo {
             }
             var nextSong = this.queue.shift();
             this.dispatchConnection = this.voice_connection?.play(ytdl(nextSong?.link || ""));
-            this.nowPlaying = nextSong?.title;
+            this.nowPlaying = nextSong;
             this.playing = true;
-            this.Text_Channel.send(`Ahora reproduciendo: **${this.nowPlaying}**`);
+            this.Text_Channel.send(`Ahora reproduciendo: **${this.nowPlaying?.title}**`);
             this.dipatchConnectionLiteners();
         } else {
             this.Text_Channel.send("No hay mas canciones en la cola de reproduccion, desconectandome...");
