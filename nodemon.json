@@ -1,5 +1,5 @@
 {
     "watch": "src",
     "ext": "ts json",
-    "exec": "tsc && node ./dist/index.js"
+    "exec": "npm run postinstall && node ./dist/index.js"
 }
