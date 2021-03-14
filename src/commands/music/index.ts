@@ -57,7 +57,7 @@ export class Server_QueueInfo {
     public async play(result: YouTubeSearchResults): Promise<void> {
         if (!this.client.voice?.connections.get(this.Voice_Channel?.id || "")) {
             this.voice_connection = await this.Voice_Channel?.join();
-            this.VoiceConnectionslListeners();
+            this.VoiceConnectionsListeners();
         }
         if (this.nowPlaying || this.queue.length) {
             this.queue.push(result);
@@ -85,7 +85,7 @@ export class Server_QueueInfo {
         });
     }
 
-    public VoiceConnectionslListeners() {
+    public VoiceConnectionsListeners() {
         this.voice_connection?.on("disconnect", () => {
             musicManager.guilds.delete(this.message.guild?.id || "");
         });
