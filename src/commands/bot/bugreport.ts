@@ -25,15 +25,15 @@ export default new class command_bugreport implements bot_commands {
             }
             if (!config) {
                 const newBug = new bugs({
-                    userId: message.author.id,
+                    userID: message.author.id,
                     username: message.author.username,
                     bug: [bug]
                 });
                 newBug.save();
             } else {
                 config.bug.push(bug);
-                await bugs.findOneAndUpdate({ userId: message.author.id }, {
-                    userId: message.author.id,
+                await bugs.findOneAndUpdate({ userID: message.author.id }, {
+                    userID: message.author.id,
                     username: message.author.username,
                     bug: config.bug
                 });

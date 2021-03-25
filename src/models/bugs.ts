@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose';
 import IBugs from "../@types/mongo/bugs-model";
 
 const bugsSchema = new Schema({
-    userId: Number,
+    userID: Number,
     username: String,
     bug: Array
 });
