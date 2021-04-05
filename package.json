@@ -24,6 +24,7 @@
   "license": "ISC",
   "dependencies": {
     "@discordjs/opus": "^0.5.0",
+    "@mapbox/node-pre-gyp": "^1.0.1",
     "ascii-table": "0.0.9",
     "canvas": "^2.7.0",
     "chalk": "^4.1.0",
@@ -38,7 +39,6 @@
     "mongoose": "^5.12.2",
     "nekos.life": "^2.0.7",
     "node-fetch": "^2.6.1",
-    "node-opus": "^0.3.3",
     "opusscript": "0.0.8",
     "swiftcord": "^2.1.7",
     "tnai": "^1.1.0",
